@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Controllers",
+    "\\DAL",
+    "\\DTO\\AccountProfile",
+    "\\Mapper",
+    "\\Properties",
+    "\\Repositories",
+    "\\ResponseModel"
+  ],
+  "SelectedNode": "\\Program.cs",
+  "PreviewInSolutionExplorer": false
+}
