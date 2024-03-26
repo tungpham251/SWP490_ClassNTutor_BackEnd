@@ -1,0 +1,89 @@
+﻿using BusinessLogic.Services.Interfaces;
+using DataAccess.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountController : ControllerBase
+    {
+        private readonly IAccountService _accountService;
+
+        public AccountController(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
+        [Authorize]
+        [HttpGet("get-email")]
+        public async Task<IActionResult> GetEmail()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (string.IsNullOrEmpty(token)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, token));
+
+            var email = await _accountService.GetEmail(token).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(email)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, email));
+
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, email));
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto entity)
+        {
+            var token = await _accountService.Login(entity).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(token)) return Unauthorized(new ApiFormatResponse(StatusCodes.Status401Unauthorized, false, token));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, token));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            return Ok();
+        }
+
+        [HttpPost("register-tutor")]
+        public async Task<IActionResult> RegisterTutor([FromForm] RegisterTutorDto entity)
+        {
+            var result = await _accountService.RegisterTutor(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpPost("register-staff")]
+        public async Task<IActionResult> RegisterStaff([FromForm] RegisterStaffDto entity)
+        {
+            var result = await _accountService.RegisterStaff(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpPost("register-parent")]
+        public async Task<IActionResult> RegisterParent([FromForm] RegisterDto entity)
+        {
+            var result = await _accountService.RegisterParent(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(result);
+        }
+
+        [HttpPut("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromForm] string email)
+        {
+            var result = await _accountService.ResetPassword(email).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize]
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordDto entity)
+        {
+            var result = await _accountService.ChangePassword(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+    }
+}
