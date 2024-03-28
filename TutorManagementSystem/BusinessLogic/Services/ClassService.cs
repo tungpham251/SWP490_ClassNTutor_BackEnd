@@ -66,59 +66,5 @@ namespace BusinessLogic.Services
 
             return new ViewPaging<ClassDto>(result, pagination);
         }
-
-        public async Task<bool> UpdateClass(UpdateClassDto entity)
-        {
-            try
-            {
-                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId)).ConfigureAwait(false);
-                if (result == null)
-                    return false;
-
-                result.TutorId = entity.TutorId;
-                result.ClassName = entity.ClassName;
-                result.ClassDesc = entity.ClassDesc;
-                result.ClassLevel = entity.ClassLevel;
-                result.Price = entity.Price;
-                result.SubjectId = entity.SubjectId;
-                result.StartDate = entity.StartDate;
-                result.EndDate = entity.EndDate;
-                result.MaxCapacity = entity.MaxCapacity;
-                result.Status = entity.Status;
-
-                _classRepository.UpdateClass(result);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> DeleteClassById(long classId)
-        {
-            try
-            {
-
-                _classRepository.DeleteClassById(classId);
-
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<ClassDetailsIncludeStudentInfoDto> GetClassByIdIncludeStudentInformation(long id)
-        {
-            var classDetails = await _classRepository.GetClassByIdIncludeStudentInformation(id).ConfigureAwait(false);
-            var result = _mapper.Map<ClassDetailsIncludeStudentInfoDto>(classDetails);
-            if (classDetails.ClassMembers != null)
-                result.StudentInformationDto = _mapper.Map<IEnumerable<StudentInformationDto>>(classDetails.ClassMembers);
-            return result;
-        }
     }
 }

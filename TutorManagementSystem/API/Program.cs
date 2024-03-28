@@ -82,6 +82,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IEvaluationService, EvaluationService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
