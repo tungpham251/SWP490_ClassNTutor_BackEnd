@@ -1,0 +1,15 @@
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.deps.json
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.runtimeconfig.json
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.dll
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.pdb
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.csproj.AssemblyReference.cache
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfoInputs.cache
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfo.cs
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.csproj.CoreCompileInputs.cache
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.sourcelink.json
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.dll
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\refint\DataAccess.dll
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.pdb
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.genruntimeconfig.cache
+D:\BE\branch - tung2\TutorManagementSystem\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll
