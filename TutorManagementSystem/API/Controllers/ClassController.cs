@@ -39,5 +39,30 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+
+        [HttpPost("update-class")]
+        public async Task<IActionResult> UpdateClass([FromBody] UpdateClassDto entity)
+        {
+            var result = await _classService.UpdateClass(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("delete-class/{classId}")]
+        public async Task<IActionResult> DeleteClassById([FromRoute] long classId)
+        {
+            var result = await _classService.DeleteClassById(classId).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("get-class-by-id-include-student-information/{id}")]
+        public async Task<IActionResult> GetClassByIdIncludeStudentInformation([FromRoute] long id)
+        {
+            var result = await _classService.GetClassByIdIncludeStudentInformation(id).ConfigureAwait(false);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
     }
 }
