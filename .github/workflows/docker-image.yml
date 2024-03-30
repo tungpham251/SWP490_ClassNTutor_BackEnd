@@ -47,4 +47,4 @@ jobs:
           docker stop classntutor_be || true && docker rm classntutor_be || true  && docker rmi ${{ vars.IMG_NAME }}:latest || true
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull ${{ vars.IMG_NAME }}:latest
-          docker run -d --name classntutor_be --network main-proxy_default --restart on-failure:5 -e ASPNETCORE_ENVIRONMENT="Staging" -e ASPNETCORE_URLS="http://+:80" -p 8080:80 ${{ vars.IMG_NAME }}:latest
+          docker run -d --name classntutor_be --restart on-failure:5 -e ASPNETCORE_ENVIRONMENT="Staging" -e ASPNETCORE_URLS="http://+:80" -p 8080:80 ${{ vars.IMG_NAME }}:latest
