@@ -19,7 +19,7 @@ jobs:
       run: echo ${{ steps.vars.outputs.sha_short }}
 
     - name: Build the Docker image
-      run: docker build . --file ./Controllers/Dockerfile -t ${{ vars.IMG_NAME }}:${{ steps.vars.outputs.sha_short }} -t ${{ vars.IMG_NAME }}:latest
+      run: docker build ./TutorManagementSystem --file ./TutorManagementSystem/API/Dockerfile -t ${{ vars.IMG_NAME }}:${{ steps.vars.outputs.sha_short }} -t ${{ vars.IMG_NAME }}:latest
 
     - name: Log in to github registry
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -40,10 +40,11 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
+        passphrase: ${{ secrets.SSH_PASSPHASE }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script: |
           docker stop classntutor_be || true && docker rm classntutor_be || true  && docker rmi ${{ vars.IMG_NAME }}:latest || true
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull ${{ vars.IMG_NAME }}:latest
-          docker run -d --name classntutor_be --network main-proxy_default --restart on-failure:5 -e ASPNETCORE_ENVIRONMENT="Staging" -e ASPNETCORE_URLS="http://+:80" -p 8080:80 ${{ vars.IMG_NAME }}:latest
+          docker run -d --name classntutor_be --network proxy_manager_default --restart on-failure:5 -e ASPNETCORE_ENVIRONMENT="Staging" -e ASPNETCORE_URLS="http://+:80" -p 8080:80 ${{ vars.IMG_NAME }}:latest
