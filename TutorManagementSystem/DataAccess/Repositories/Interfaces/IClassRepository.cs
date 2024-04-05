@@ -7,6 +7,8 @@ namespace DataAccess.Repositories.Interfaces
     {
         IQueryable<ClassDto> SearchClass(string searchWord, string status);
 
+        IQueryable<ClassDto> SearchClassOfTutor(int tutorId,string searchWord, string status);
+
         IQueryable<ClassDto> GetClassDetail(long id);
     }
 }

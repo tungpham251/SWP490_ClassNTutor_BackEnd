@@ -40,4 +40,13 @@ namespace DataAccess.Dtos
         public PagingRequest PagingRequest { get; set; } = null!;
         public string? Status { get; set; }
     }
+
+    public class ClassOfTutorRequestDto
+    {
+        public int TutorId { get; set; }
+        public string? SearchWord { get; set; }
+        [Required]
+        public PagingRequest PagingRequest { get; set; } = null!;
+        public string? Status { get; set; }
+    }
 }

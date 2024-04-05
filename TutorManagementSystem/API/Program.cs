@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjectV1", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ClassNTutor", Version = "v1" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -82,11 +82,13 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 builder.Services.AddCors();
 

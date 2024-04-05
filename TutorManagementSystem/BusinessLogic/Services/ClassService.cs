@@ -66,5 +66,22 @@ namespace BusinessLogic.Services
 
             return new ViewPaging<ClassDto>(result, pagination);
         }
+
+        public async Task<ViewPaging<ClassDto>> GetClassesOfTutor(ClassOfTutorRequestDto entity)
+        {
+            var search = _classRepository.SearchClassOfTutor(entity.TutorId, entity.SearchWord, entity.Status);
+
+            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<ClassDto>>(pagingList);
+
+            return new ViewPaging<ClassDto>(result, pagination);
+        }
     }
 }
