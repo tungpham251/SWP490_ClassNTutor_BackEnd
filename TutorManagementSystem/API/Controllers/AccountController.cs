@@ -17,18 +17,18 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet("get-email")]
-        public async Task<IActionResult> GetEmail()
+        [HttpGet("get-account-id")]
+        public async Task<IActionResult> GetAccountId()
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (string.IsNullOrEmpty(token)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, token));
 
-            var email = await _accountService.GetEmail(token).ConfigureAwait(false);
+            var id = await _accountService.GetAccountId(token!).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(email)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, email));
+            if (string.IsNullOrEmpty(id)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, id));
 
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, email));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, id));
         }
 
         [HttpPost("login")]
@@ -66,7 +66,7 @@ namespace API.Controllers
         {
             var result = await _accountService.RegisterParent(entity).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
-            return Ok(result);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
         [HttpPut("reset-password")]
@@ -83,6 +83,27 @@ namespace API.Controllers
         {
             var result = await _accountService.ChangePassword(entity).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("get-all-tutors")]
+        public async Task<IActionResult> GetAllTutors()
+        {
+            var result = await _accountService.GetAllTutors().ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("get-all-parents")]
+        public async Task<IActionResult> GetAllParents()
+        {
+            var result = await _accountService.GetAllParents().ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("get-all-students")]
+        public async Task<IActionResult> GetAllStudents()
+        {
+            var result = await _accountService.GetAllStudents().ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
     }
