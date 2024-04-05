@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Services.Interfaces;
 using DataAccess.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,6 +16,7 @@ namespace API.Controllers
             _subjectService = subjectService;
         }
 
+        [Authorize(Roles = "STAFF")]
         [HttpGet("get-all-subjects")]
         public async Task<IActionResult> GetSubjects()
         {
@@ -22,6 +24,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [Authorize(Roles = "STAFF")]
         [HttpGet("get-subjects")]
         public async Task<IActionResult> GetSubjects([FromQuery] SubjectRequestDto entity)
         {
@@ -29,6 +32,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [Authorize(Roles = "STAFF")]
         [HttpGet("get-subject-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -37,7 +41,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpPost("add-subject")]
         public async Task<IActionResult> AddSubject([FromForm] SubjectDto entity)
         {
@@ -46,7 +50,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpPut("update-subject")]
         public async Task<IActionResult> UpdateSubject([FromForm] SubjectDto entity)
         {
@@ -55,7 +59,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpDelete("delete-subject/{id}")]
         public async Task<IActionResult> DeleteSubject([FromQuery] int id)
         {

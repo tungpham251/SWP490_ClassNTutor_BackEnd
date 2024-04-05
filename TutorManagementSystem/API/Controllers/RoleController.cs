@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Services.Interfaces;
 using DataAccess.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,6 +16,7 @@ namespace API.Controllers
             _roleService = roleService;
         }
 
+        [Authorize(Roles = "STAFF")]
         [HttpGet("get-roles")]
         public async Task<IActionResult> GetRoles([FromQuery] RoleRequestDto entity)
         {
@@ -22,6 +24,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [Authorize(Roles = "STAFF")]
         [HttpGet("get-role-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -30,7 +33,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpPost("add-role")]
         public async Task<IActionResult> AddRole([FromForm] RoleDto entity)
         {
@@ -39,7 +42,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpPut("update-role")]
         public async Task<IActionResult> UpdateRole([FromForm] RoleDto entity)
         {
@@ -48,7 +51,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
+        [Authorize(Roles = "STAFF")]
         [HttpDelete("delete-role/{id}")]
         public async Task<IActionResult> DeleteRole([FromQuery] int id)
         {
