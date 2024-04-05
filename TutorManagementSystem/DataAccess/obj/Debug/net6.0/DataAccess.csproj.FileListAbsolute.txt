@@ -1,0 +1,14 @@
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.deps.json
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.runtimeconfig.json
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\bin\Debug\net6.0\DataAccess.pdb
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.csproj.AssemblyReference.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfoInputs.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfo.cs
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.csproj.CoreCompileInputs.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\refint\DataAccess.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.pdb
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\DataAccess.genruntimeconfig.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll

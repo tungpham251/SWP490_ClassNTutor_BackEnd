@@ -1,0 +1,15 @@
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\bin\Debug\net6.0\BusinessLogic.deps.json
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\bin\Debug\net6.0\BusinessLogic.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\bin\Debug\net6.0\BusinessLogic.pdb
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\bin\Debug\net6.0\DataAccess.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\bin\Debug\net6.0\DataAccess.pdb
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.csproj.AssemblyReference.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.AssemblyInfoInputs.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.AssemblyInfo.cs
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.csproj.CoreCompileInputs.cache
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.csproj.CopyComplete
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\refint\BusinessLogic.dll
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\BusinessLogic.pdb
+D:\SE\Projects\Github\Fix\SWP490_ClassNTutor_BackEnd\TutorManagementSystem\BusinessLogic\obj\Debug\net6.0\ref\BusinessLogic.dll
