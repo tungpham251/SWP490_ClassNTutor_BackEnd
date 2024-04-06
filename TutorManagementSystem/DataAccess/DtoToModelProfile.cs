@@ -13,6 +13,7 @@ namespace DataAccess
             CreateMap<SubjectDto, Subject>();
             CreateMap<ClassDto, Class>();
             CreateMap<AddClassDto, Class>();
+            CreateMap<AddRequestDto, Request>();
         }
 
     }
