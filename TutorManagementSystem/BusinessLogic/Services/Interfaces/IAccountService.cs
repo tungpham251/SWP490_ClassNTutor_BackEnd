@@ -5,7 +5,7 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<string> GetEmail(string token);
+        Task<string> GetAccountId(string token);
         Task<string> Login(LoginDto entity);
 
         Task<bool> ResetPassword(string email);
@@ -18,8 +18,10 @@ namespace BusinessLogic.Services.Interfaces
 
         Task<bool> RegisterTutor(RegisterTutorDto entity);
 
-        Task<Account> AddAccount(RegisterDto entity);
+        Task<IEnumerable<PersonDto>> GetAllParents();
 
-        Task<Person> AddPerson(RegisterDto entity);
+        Task<IEnumerable<PersonDto>> GetAllTutors();
+
+        Task<IEnumerable<PersonDto>> GetAllStudents();
     }
 }

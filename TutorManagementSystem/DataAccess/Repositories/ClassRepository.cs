@@ -1,7 +1,6 @@
 ﻿using DataAccess.Dtos;
 using DataAccess.Models;
 using DataAccess.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -72,26 +71,38 @@ namespace DataAccess.Repositories
 
         }
 
-
-        public void UpdateClass(Class entity)
+        public IQueryable<ClassDto> SearchClassOfTutor(int tutorId, string searchWord, string status)
         {
-            _context.Classes.Update(entity);
-        }
+            var query = from c in _context.Classes
+                        join sj in _context.Subjects on c.SubjectId equals sj.SubjectId
+                        where c.TutorId == tutorId
+                        select new ClassDto
+                        {
+                            ClassId = c.ClassId,
+                            ClassName = c.ClassName,
+                            ClassDesc = c.ClassDesc,
+                            ClassLevel = c.ClassLevel,
+                            Price = c.Price,
+                            SubjectName = sj.SubjectName,
+                            StartDate = c.StartDate,
+                            EndDate = c.EndDate,
+                            MaxCapacity = c.MaxCapacity,
+                            CreatedAt = c.CreatedAt,
+                            UpdatedAt = c.UpdatedAt,
+                            Status = c.Status
+                        };
 
-        public void DeleteClassById(long classId)
-        {
-            var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
-            classById.Status = "SUSPEND";
-            _context.Classes.Update(classById);
-        }
+            if (!string.IsNullOrWhiteSpace(searchWord))
+            {
+                query = query.Where(x => x.ClassName!.ToLower().Contains(searchWord.ToLower()));
+            }
 
-        public async Task<Class> GetClassByIdIncludeStudentInformation(long id)
-        {
-            var result = await _context.Classes.Include(c => c.ClassMembers)
-                             .ThenInclude(c => c.Student)
-                             .ThenInclude(c => c.StudentNavigation)
-                 .FirstOrDefaultAsync(c => c.ClassId.Equals(id) && c.Status.Equals("ACTIVE")).ConfigureAwait(false);
-            return result;
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(c => c.Status!.Equals(status));
+            }
+
+            return query.OrderBy(x => x.ClassId);
         }
     }
 }

@@ -6,6 +6,8 @@ namespace DataAccess.Repositories.Interfaces
     {
         IQueryable<RequestDto> SearchRequest(int subjectId);
 
+        IQueryable<RequestDto> SearchRequestOfTutor(int tutorId, int subjectId);
+
         IQueryable<RequestDto> GetRequestDetail(long id);
     }
 }
