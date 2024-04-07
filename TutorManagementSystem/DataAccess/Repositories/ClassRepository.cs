@@ -1,6 +1,7 @@
 ﻿using DataAccess.Dtos;
 using DataAccess.Models;
 using DataAccess.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -103,6 +104,27 @@ namespace DataAccess.Repositories
             }
 
             return query.OrderBy(x => x.ClassId);
+        }
+
+        public void UpdateClass(Class entity)
+        {
+            _context.Classes.Update(entity);
+        }
+
+        public void DeleteClassById(long classId)
+        {
+            var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
+            classById.Status = "SUSPEND";
+            _context.Classes.Update(classById);
+        }
+
+        public async Task<Class> GetClassByIdIncludeStudentInformation(long id)
+        {
+            var result = await _context.Classes.Include(c => c.ClassMembers)
+                             .ThenInclude(c => c.Student)
+                             .ThenInclude(c => c.StudentNavigation)
+                 .FirstOrDefaultAsync(c => c.ClassId.Equals(id) && c.Status.Equals("ACTIVE")).ConfigureAwait(false);
+            return result;
         }
     }
 }
