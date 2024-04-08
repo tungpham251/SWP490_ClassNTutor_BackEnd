@@ -35,7 +35,7 @@ namespace API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto entity)
         {
             var token = await _accountService.Login(entity).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(token)) return Unauthorized(new ApiFormatResponse(StatusCodes.Status401Unauthorized, false, token));
+            if (token == null) return Unauthorized(new ApiFormatResponse(StatusCodes.Status401Unauthorized, false, token));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, token));
         }
 

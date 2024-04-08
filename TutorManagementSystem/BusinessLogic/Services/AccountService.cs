@@ -177,7 +177,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<string> Login(LoginDto entity)
+        public async Task<LoginResponseDto> Login(LoginDto entity)
         {
             try
             {
@@ -202,10 +202,13 @@ namespace BusinessLogic.Services
                 var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                     _config["Jwt:Audience"],
                     claims,
-                    expires: DateTime.Now.AddMinutes(15),
+                    expires: DateTime.Now.AddMonths(2),
                     signingCredentials: credentials);
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                var tokenHandle = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName);
+
             }
             catch (Exception)
             {
