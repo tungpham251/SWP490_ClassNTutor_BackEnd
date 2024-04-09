@@ -10,6 +10,7 @@ namespace DataAccess
         {
             CreateMap<Role, RoleDto>();
             CreateMap<Subject, SubjectDto>();
+            CreateMap<Evaluation, EvaluationDto>();
             CreateMap<Class, ClassDto>()
                 .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.SubjectName));
             CreateMap<Class, AddClassDto>();

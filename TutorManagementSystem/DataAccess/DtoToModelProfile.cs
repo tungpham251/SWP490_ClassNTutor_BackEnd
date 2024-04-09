@@ -11,9 +11,11 @@ namespace DataAccess
         {
             CreateMap<RoleDto, Role>();
             CreateMap<SubjectDto, Subject>();
+            CreateMap<EvaluationDto, Evaluation>();
             CreateMap<ClassDto, Class>();
             CreateMap<AddClassDto, Class>();
             CreateMap<AddRequestDto, Request>();
+            CreateMap<CreatePaymentDto, Payment>();
         }
 
     }
