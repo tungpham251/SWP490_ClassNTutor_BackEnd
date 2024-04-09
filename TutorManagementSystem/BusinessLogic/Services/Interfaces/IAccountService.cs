@@ -17,11 +17,5 @@ namespace BusinessLogic.Services.Interfaces
         Task<bool> RegisterStaff(RegisterStaffDto entity);
 
         Task<bool> RegisterTutor(RegisterTutorDto entity);
-
-        Task<IEnumerable<PersonDto>> GetAllParents();
-
-        Task<IEnumerable<PersonDto>> GetAllTutors();
-
-        Task<IEnumerable<PersonDto>> GetAllStudents();
     }
 }

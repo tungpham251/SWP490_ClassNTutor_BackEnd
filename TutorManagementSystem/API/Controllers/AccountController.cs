@@ -86,25 +86,5 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [HttpGet("get-all-tutors")]
-        public async Task<IActionResult> GetAllTutors()
-        {
-            var result = await _accountService.GetAllTutors().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [HttpGet("get-all-parents")]
-        public async Task<IActionResult> GetAllParents()
-        {
-            var result = await _accountService.GetAllParents().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [HttpGet("get-all-students")]
-        public async Task<IActionResult> GetAllStudents()
-        {
-            var result = await _accountService.GetAllStudents().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
     }
 }

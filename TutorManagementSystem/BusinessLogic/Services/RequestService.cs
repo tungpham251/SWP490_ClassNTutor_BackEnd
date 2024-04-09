@@ -51,9 +51,9 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<ViewPaging<RequestDto>> GetRequests(RequestRequestDto entity)
+        public async Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequest(entity.SubjectId);
+            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -69,9 +69,9 @@ namespace BusinessLogic.Services
             return new ViewPaging<RequestDto>(result, pagination);
         }
 
-        public async Task<ViewPaging<RequestDto>> GetRequestsOfTutor(RequestOfTutorRequestDto entity)
+        public async Task<ViewPaging<RequestDto>> GetRequestsForTutor(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestOfTutor(entity.TutorId, entity.SubjectId);
+            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -86,5 +86,6 @@ namespace BusinessLogic.Services
 
             return new ViewPaging<RequestDto>(result, pagination);
         }
+
     }
 }

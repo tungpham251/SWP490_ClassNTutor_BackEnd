@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccess.Dtos;
 
 namespace BusinessLogic.Services.Interfaces
 {
     public interface IPersonService
     {
+        Task<ViewPaging<PersonDto>> GetStaffs(PersonRequestDto entity);
+
+        Task<ViewPaging<PersonDto>> GetAccounts(PersonRequestDto entity);
     }
 }

@@ -26,4 +26,5 @@ namespace DataAccess.Dtos
             RoleName = roleName;
         }
     }
+
 }

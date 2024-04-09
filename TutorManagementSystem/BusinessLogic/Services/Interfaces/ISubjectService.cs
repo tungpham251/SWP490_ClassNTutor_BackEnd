@@ -4,7 +4,6 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface ISubjectService
     {
-        Task<IEnumerable<SubjectDto>> GetAllSubjects();
         Task<ViewPaging<SubjectDto>> GetSubjects(SubjectRequestDto entity);
 
         Task<SubjectDto> GetById(int id);

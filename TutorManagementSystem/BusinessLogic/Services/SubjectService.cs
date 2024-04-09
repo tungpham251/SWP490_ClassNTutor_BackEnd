@@ -26,7 +26,7 @@ namespace BusinessLogic.Services
             {
                 var checkDuplicate = await _context.Subjects
                 .Where(x => x.SubjectName.Trim().ToLower()
-                .Equals(entity.SubjectName.Trim().ToLower()))
+                .Equals(entity.SubjectName!.Trim().ToLower()))
                 .FirstOrDefaultAsync().ConfigureAwait(false);
 
                 if (checkDuplicate != null)
@@ -37,7 +37,7 @@ namespace BusinessLogic.Services
                 var lastSubjectId = await _context.Subjects.OrderBy(x => x.SubjectId).LastOrDefaultAsync().ConfigureAwait(false);
 
                 var newSubject = _mapper.Map<Subject>(entity);
-                newSubject.SubjectId = lastSubjectId.SubjectId + 1;
+                newSubject.SubjectId = lastSubjectId!.SubjectId + 1;
                 await _context.Subjects.AddAsync(newSubject).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -69,21 +69,6 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<IEnumerable<SubjectDto>> GetAllSubjects()
-        {
-            try
-            {
-                var subjects = await _context.Subjects
-                    .Where(x => x.Status.Trim().ToLower().Equals("active".Trim().ToLower()))
-                    .ToListAsync().ConfigureAwait(false);
-                return _mapper.Map<IEnumerable<SubjectDto>>(subjects);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public async Task<SubjectDto> GetById(int id)
         {
             var subject = await _context.Subjects
@@ -98,7 +83,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<SubjectDto>> GetSubjects(SubjectRequestDto entity)
         {
-            var search = _SubjectRepository.SearchSubject(entity.SearchWord!, entity.Status!);
+            var search = _SubjectRepository.SearchSubjects(entity.SearchWord!, entity.Status!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.SubjectId)
@@ -125,8 +110,8 @@ namespace BusinessLogic.Services
 
                 if (subject == null) return false;
 
-                subject.SubjectName = entity.SubjectName;
-                subject.Status = entity.Status;
+                subject.SubjectName = entity.SubjectName!;
+                subject.Status = entity.Status!;
 
                 _context.Subjects.Update(subject);
                 await _context.SaveChangesAsync().ConfigureAwait(false);

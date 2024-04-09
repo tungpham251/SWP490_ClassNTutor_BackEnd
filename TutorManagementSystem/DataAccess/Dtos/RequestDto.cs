@@ -38,16 +38,12 @@ namespace DataAccess.Dtos
 
     public class RequestRequestDto
     {
-        public int SubjectId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long PersonId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long SubjectId { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
     }
 
-    public class RequestOfTutorRequestDto
-    {
-        public int TutorId { get; set; }
-        public int SubjectId { get; set; }
-        [Required]
-        public PagingRequest PagingRequest { get; set; } = null!;
-    }
 }
