@@ -2,6 +2,7 @@
 using DataAccess.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -74,6 +75,23 @@ namespace API.Controllers
                 return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
             }
             return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+        }
+
+        [Authorize(Roles = "STAFF,TUTOR")]
+        [HttpGet("get-payment-by-current-user")]
+        public async Task<IActionResult> GetPaymentByCurrentUser()
+        {
+
+            string personId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(personId))
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
+
+            var result = await _paymentService.GetPaymentByCurrentUser(personId).ConfigureAwait(false);
+            if (result == null)
+            {
+                return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            }
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
     }
 }

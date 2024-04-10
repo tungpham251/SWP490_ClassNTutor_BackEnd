@@ -16,10 +16,10 @@ namespace DataAccess
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.StudentNavigation.Address))
                 .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.StudentNavigation.Dob))
                 .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.StudentNavigation.UserAvatar))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.StudentNavigation.FullName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.StudentNavigation == null ? "null" : src.StudentNavigation.FullName))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.StudentNavigation.Gender))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.StudentNavigation.Phone))
-                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.FullName));
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent == null ? "null" : src.Parent.FullName));
 
             CreateMap<Class, ClassDto>()
                 .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.SubjectName));
@@ -34,7 +34,8 @@ namespace DataAccess
                  .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Account!.Status));
 
 
-            CreateMap<Class, ClassDetailsIncludeStudentInfoDto>();
+            CreateMap<Class, ClassDetailsIncludeStudentInfoDto>()
+                .ForMember(dest => dest.TutorName, opt => opt.MapFrom(src => src.Tutor == null ? "null" : src.Tutor.Person == null ? "null" : src.Tutor.Person.FullName));
             CreateMap<ClassMember, StudentInformationDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.FullName))
                 .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.UserAvatar))
@@ -42,7 +43,16 @@ namespace DataAccess
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Gender))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Address));
 
-            CreateMap<Payment, ResponsePaymentDto>();
+            CreateMap<Payment, ResponsePaymentDto>()
+                .ForMember(dest => dest.PayerName, opt => opt.MapFrom(src => src.Payer == null ? "null" : src.Payer.Person == null ? "null" : src.Payer.Person.FullName))
+                .ForMember(dest => dest.RequestName, opt => opt.MapFrom(src => src.Request == null ? "null" : src.Request.Person == null ? "null" : src.Request.Person.FullName))
+                ;
+
+            CreateMap<Schedule, ScheduleDto>();
+            CreateMap<SubjectTutor, SubjectTutorDto>()
+                .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject.SubjectName));
+
+            CreateMap<Person, ProfileDto>();
         }
 
     }

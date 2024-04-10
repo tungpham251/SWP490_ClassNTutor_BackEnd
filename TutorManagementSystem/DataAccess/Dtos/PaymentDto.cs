@@ -19,8 +19,8 @@ namespace DataAccess.Dtos
     public class ResponsePaymentDto
     {
         public long PaymentId { get; set; }
-        public long PayerId { get; set; }
-        public long RequestId { get; set; }
+        public string PayerName { get; set; }
+        public string RequestName { get; set; }
         public int PaymentAmount { get; set; }
         public string? PaymentDesc { get; set; }
         public string PaymentType { get; set; } = null!;
