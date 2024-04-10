@@ -17,7 +17,8 @@ namespace DataAccess.Repositories
         public IQueryable<Payment> SearchAndFilterPayment(SearchFilterPaymentDto entity)
         {
 
-            IQueryable<Payment> result = _context.Payments;
+            IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                          .Include(p => p.Request).ThenInclude(r => r.Person);
 
             if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
             {
@@ -44,7 +45,9 @@ namespace DataAccess.Repositories
         }
         public async Task<Payment> GetPaymentById(long paymentId)
         {
-            var result = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
+            var result = await _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                .Include(p => p.Request).ThenInclude(r => r.Person)
+                                                .FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
             return result;
         }
 

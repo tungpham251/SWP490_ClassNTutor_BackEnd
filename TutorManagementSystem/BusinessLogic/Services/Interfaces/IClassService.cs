@@ -16,6 +16,10 @@ namespace BusinessLogic.Services.Interfaces
         Task<bool> AddClass(AddClassDto entity);
 
         Task<bool> UpdateClass(UpdateClassDto entity);
+
+        Task<bool> AddClassIncludeSchedule(AddClassIncludeScheduleDto entity);
+        Task<bool> UpdateClassIncludeSchedule(UpdateClassIncludeScheduleDto entity);
+
         Task<bool> DeleteClassById(long classId);
         Task<ClassDetailsIncludeStudentInfoDto> GetClassByIdIncludeStudentInformation(long id);
     }

@@ -35,4 +35,20 @@ namespace DataAccess.Dtos
         public long StudentId { get; set; }
         public string Status { get; set; } = null!;
     }
+
+    public class AddStudentDto
+    {
+        public long StudentId { get; set; }
+        public long ParentId { get; set; }
+        public int StudentLevel { get; set; }
+        public string? Status { get; set; }
+    }
+
+    public class UpdateStudentDto
+    {
+        public long StudentId { get; set; }
+        public long ParentId { get; set; }
+        public int StudentLevel { get; set; }
+        public string? Status { get; set; }
+    }
 }

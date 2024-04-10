@@ -9,5 +9,6 @@ namespace BusinessLogic.Services.Interfaces
         Task<bool> UpdatePayment(long paymentId, string paymentDescription);
         Task<bool> DeletePayment(long paymentId);
         Task<bool> CreatePayment(CreatePaymentDto entity);
+        Task<IEnumerable<ResponsePaymentDto>> GetPaymentByCurrentUser(string personId);
     }
 }

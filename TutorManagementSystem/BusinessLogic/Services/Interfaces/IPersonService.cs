@@ -8,5 +8,9 @@ namespace BusinessLogic.Services.Interfaces
         Task<ViewPaging<PersonDto>> GetStaffs(PersonRequestDto entity);
 
         Task<ViewPaging<PersonDto>> GetAccounts(PersonRequestDto entity);
+
+        public Task<ProfileDto> GetProfileByCurrentUser(string personId);
+        public Task<bool> EditProfileCurrentUser(EditProfileDto entity, string personId);
+
     }
 }

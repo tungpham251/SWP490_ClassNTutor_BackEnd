@@ -164,7 +164,8 @@ namespace DataAccess.Repositories
 
         public async Task<Class> GetClassByIdIncludeStudentInformation(long id)
         {
-            var result = await _context.Classes.Include(c => c.ClassMembers)
+            var result = await _context.Classes.Include(c => c.Schedules)
+                                .Include(c => c.ClassMembers)
                              .ThenInclude(c => c.Student)
                              .ThenInclude(c => c.StudentNavigation)
                  .FirstOrDefaultAsync(c => c.ClassId.Equals(id) && c.Status.Equals("ACTIVE")).ConfigureAwait(false);

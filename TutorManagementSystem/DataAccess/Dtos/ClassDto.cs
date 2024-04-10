@@ -85,6 +85,7 @@ namespace DataAccess.Dtos
     {
 
         public long TutorId { get; set; }
+        public string TutorName { get; set; }
         public string ClassName { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
@@ -97,7 +98,7 @@ namespace DataAccess.Dtos
         public DateTime? UpdatedAt { get; set; }
         public string Status { get; set; } = null!;
         public IEnumerable<StudentInformationDto> StudentInformationDto { get; set; }
-
+        public IEnumerable<ScheduleDto>? Schedules { get; set; }
 
     }
     public class StudentInformationDto
@@ -107,5 +108,37 @@ namespace DataAccess.Dtos
         public string Phone { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public string Address { get; set; } = null!;
+    }
+
+    public class AddClassIncludeScheduleDto
+    {
+        public long TutorId { get; set; }
+        [Required]
+        public string? ClassName { get; set; }
+        public string? ClassDesc { get; set; }
+        public int ClassLevel { get; set; }
+        public long Price { get; set; }
+        public long SubjectId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int MaxCapacity { get; set; }
+        public string? Status { get; set; }
+        public IEnumerable<AddScheduleDto>? AddScheduleDto { get; set; }
+    }
+
+    public class UpdateClassIncludeScheduleDto
+    {
+        public long ClassId { get; set; }
+        public long TutorId { get; set; }
+        public string ClassName { get; set; } = null!;
+        public string? ClassDesc { get; set; }
+        public int ClassLevel { get; set; }
+        public long Price { get; set; }
+        public long SubjectId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public int MaxCapacity { get; set; }
+        public IEnumerable<UpdateScheduleDto>? UpdateScheduleDto { get; set; }
+
     }
 }
