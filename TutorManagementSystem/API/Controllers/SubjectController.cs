@@ -16,13 +16,6 @@ namespace API.Controllers
             _subjectService = subjectService;
         }
 
-        [Authorize(Roles = "STAFF")]
-        [HttpGet("get-all-subjects")]
-        public async Task<IActionResult> GetSubjects()
-        {
-            var result = await _subjectService.GetAllSubjects().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
 
         [Authorize(Roles = "STAFF")]
         [HttpGet("get-subjects")]

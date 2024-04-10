@@ -4,9 +4,9 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface IRequestService
     {
-        Task<ViewPaging<RequestDto>> GetRequests(RequestRequestDto entity);
+        Task<ViewPaging<RequestDto>> GetRequestsForTutor(RequestRequestDto entity);
 
-        Task<ViewPaging<RequestDto>> GetRequestsOfTutor(RequestOfTutorRequestDto entity);
+        Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity);
 
         Task<RequestDto> GetById(long id);
 

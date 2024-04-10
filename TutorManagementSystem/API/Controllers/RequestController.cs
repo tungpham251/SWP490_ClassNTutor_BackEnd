@@ -17,15 +17,23 @@ namespace API.Controllers
             _requestService = requestService;
         }
 
-        [Authorize(Roles = "STAFF")]
-        [HttpGet("get-requests")]
-        public async Task<IActionResult> GetRequests([FromQuery] RequestRequestDto entity)
+        [Authorize(Roles = "TUTOR")]
+        [HttpGet("get-requests-for-tutor")]
+        public async Task<IActionResult> GetRequestsForTutor([FromQuery] RequestRequestDto entity)
         {
-            var result = await _requestService.GetRequests(entity).ConfigureAwait(false);
+            var result = await _requestService.GetRequestsForTutor(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "PARENT")]
+        [HttpGet("get-requests-for-parent")]
+        public async Task<IActionResult> GetRequestsForParent([FromQuery] RequestRequestDto entity)
+        {
+            var result = await _requestService.GetRequestsForParent(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR,PARENT")]
         [HttpGet("get-request-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] long id)
         {
@@ -35,20 +43,12 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "TUTOR,PARENT")]
         [HttpPost("add-request")]
         public async Task<IActionResult> AddRequest([FromForm] AddRequestDto entity)
         {
             var result = await _requestService.AddRequest(entity).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [Authorize(Roles = "TUTOR")]
-        [HttpGet("get-requests-of-tutor")]
-        public async Task<IActionResult> GetRequestsOfTutor([FromQuery] RequestOfTutorRequestDto entity)
-        {
-            var result = await _requestService.GetRequestsOfTutor(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
     }

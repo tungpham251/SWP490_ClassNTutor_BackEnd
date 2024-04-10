@@ -21,8 +21,8 @@ namespace BusinessLogic.Services
 
         private AmazonS3Client CreateConnection()
         {
-            var accessKeyID = _configuration["AWS:AccessKeyID"];
-            var secretAccessKey = _configuration["AWS:SecretAccessKey"];
+            var accessKeyID = _configuration["AWS:AccessKeyID"].Replace("-", "");
+            var secretAccessKey = _configuration["AWS:SecretAccessKey"].Replace("-", "");
             var region = _configuration["AWS:Region"];
 
             var awsCredentials = new BasicAWSCredentials(accessKeyID, secretAccessKey);
@@ -46,7 +46,7 @@ namespace BusinessLogic.Services
                 {
                     BucketName = _configuration["AWS:BucketName"],
                     Key = fileName,
-                    Expires = DateTime.Now.AddMinutes(5)
+                    Expires = DateTime.Now.AddYears(1),
                 };
 
                 string path = await amazonS3Client.GetPreSignedURLAsync(request);

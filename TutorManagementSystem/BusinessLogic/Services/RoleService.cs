@@ -37,7 +37,7 @@ namespace BusinessLogic.Services
                 var lastRoleId = await _context.Roles.OrderBy(x => x.RoleId).LastOrDefaultAsync().ConfigureAwait(false);
 
                 var newRole = _mapper.Map<Role>(entity);
-                newRole.RoleId = lastRoleId.RoleId + 1;
+                newRole.RoleId = lastRoleId!.RoleId + 1;
                 newRole.CreatedAt = newRole.UpdatedAt = DateTime.Now;
                 await _context.Roles.AddAsync(newRole).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RoleDto>> GetRoles(RoleRequestDto entity)
         {
-            var search = _roleRepository.SearchRole(entity.SearchWord, entity.Status);
+            var search = _roleRepository.SearchRoles(entity.SearchWord!, entity.Status!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RoleId)
@@ -111,8 +111,8 @@ namespace BusinessLogic.Services
 
                 if (role == null) return false;
 
-                role.RoleName = entity.RoleName;
-                role.Status = entity.Status;
+                role.RoleName = entity.RoleName!;
+                role.Status = entity.Status!;
                 role.CreatedAt = role.UpdatedAt = DateTime.Now;
                 _context.Roles.Update(role);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
