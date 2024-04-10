@@ -95,6 +95,15 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "TUTOR")]
+        [HttpPost("delete-students-in-class")]
+        public async Task<IActionResult> DeleteStudentsInClass([FromBody] List<long> entity)
+        {
+            var result = await _classService.DeleteStudentsInClass(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR")]
         [HttpGet("get-students-in-class")]
         public async Task<IActionResult> GetStudentsInClass([FromQuery] StudentInClassRequestDto entity)
         {

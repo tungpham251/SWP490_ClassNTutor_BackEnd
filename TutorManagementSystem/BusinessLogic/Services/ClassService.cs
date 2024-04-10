@@ -27,7 +27,7 @@ namespace BusinessLogic.Services
                 var lastClassId = await _context.Classes.OrderBy(x => x.ClassId).LastOrDefaultAsync().ConfigureAwait(false);
 
                 var newClass = _mapper.Map<Class>(entity);
-                newClass.ClassId = lastClassId.ClassId+1;
+                newClass.ClassId = lastClassId.ClassId + 1;
                 newClass.CreatedAt = newClass.UpdatedAt = DateTime.Now;
 
                 await _context.Classes.AddAsync(newClass).ConfigureAwait(false);
@@ -187,6 +187,28 @@ namespace BusinessLogic.Services
                     classMember.Id = findLast!.Id + 1;
                     classMember.Status = "CREATED";
                     await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteStudentsInClass(List<long> entity)
+        {
+            try
+            {
+                foreach (var item in entity)
+                {
+                    var classMember = await _context.ClassMembers.Where(x=> x.Id == item)
+                        .FirstOrDefaultAsync().ConfigureAwait(false);
+                    if(classMember == null) return false;
+                   
+                    classMember.Status = "DELETED";
+                    _context.ClassMembers.Update(classMember);
                     await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 return true;
