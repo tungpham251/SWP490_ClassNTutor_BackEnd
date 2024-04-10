@@ -10,6 +10,7 @@ namespace BusinessLogic.Services.Interfaces
         Task<ViewPaging<ClassDto>> GetClasses(ClassRequestDto entity);
         Task<ViewPaging<StudentDto>> GetStudentsInClass(StudentInClassRequestDto entity);
         Task<bool> AddStudentsInClass(List<AddStudentInClassRequestDto> entity);
+        Task<bool> DeleteStudentsInClass(List<long> entity);
         Task<ClassDto> GetById(long id);
 
         Task<bool> AddClass(AddClassDto entity);
