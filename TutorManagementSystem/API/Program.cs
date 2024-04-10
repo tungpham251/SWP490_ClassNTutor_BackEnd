@@ -1,3 +1,4 @@
+using BusinessLogic.Helpers;
 using BusinessLogic.Services;
 using BusinessLogic.Services.Interfaces;
 using DataAccess;
@@ -13,7 +14,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    options.JsonSerializerOptions.Converters.Add(new TimeSpanToStringConverter()));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -84,6 +87,9 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ISubjectTutorService, SubjectTutorService>();
 builder.Services.AddScoped<IEvaluationService, EvaluationService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();

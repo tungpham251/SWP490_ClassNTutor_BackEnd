@@ -46,6 +46,18 @@ namespace BusinessLogic.Services
             return result;
         }
 
+        public async Task<IEnumerable<ResponsePaymentDto>> GetPaymentByCurrentUser(string personId)
+        {
+            var currentId = long.Parse(personId);
+            var search = await _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                .Include(p => p.Request).ThenInclude(r => r.Person)
+                                                .Where(p => p.PayerId.Equals(currentId) || p.RequestId.Equals(currentId))
+                                                .ToListAsync()
+                                                .ConfigureAwait(false);
+            var result = _mapper.Map<IEnumerable<ResponsePaymentDto>>(search);
+            return result;
+        }
+
         public async Task<ResponsePaymentDto> GetPaymentById(long paymentId)
         {
             var search = await _paymentRepository.GetPaymentById(paymentId).ConfigureAwait(false);
