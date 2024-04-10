@@ -6,9 +6,9 @@ namespace DataAccess.Repositories.Interfaces
     public interface IClassRepository
     {
         IQueryable<ClassDto> SearchClass(string searchWord, string status);
-
-        IQueryable<ClassDto> SearchClassOfTutor(int tutorId,string searchWord, string status);
-
+        IQueryable<ClassDto> SearchClassForTutor(long tutorId, string searchWord, string status);
+        IQueryable<ClassDto> SearchClassForParent(long parentId, string searchWord, string status);
+        IQueryable<StudentDto> SearchStudentInParent(string searchWord);
         IQueryable<ClassDto> GetClassDetail(long id);
 
         void UpdateClass(Class entity);

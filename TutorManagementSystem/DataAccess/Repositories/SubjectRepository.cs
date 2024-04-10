@@ -12,7 +12,7 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public IQueryable<Subject> SearchSubject(string searchWord, string status)
+        public IQueryable<Subject> SearchSubjects(string searchWord, string status)
         {
             var result = _context.Subjects.AsQueryable();
 
@@ -20,7 +20,7 @@ namespace DataAccess.Repositories
                 result = result.Where(x => x.SubjectName.ToLower()
                 .Contains(searchWord.ToLower()));
 
-            if (status != null)
+            if (!string.IsNullOrWhiteSpace(status))
             {
                 result = result.Where(c => c.Status.Equals(status));
             }

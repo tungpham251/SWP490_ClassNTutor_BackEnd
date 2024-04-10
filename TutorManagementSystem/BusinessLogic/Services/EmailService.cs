@@ -18,8 +18,8 @@ namespace BusinessLogic.Services
         {
             try
             {
-                var fromAddress = _configuration["DefaultEmail:Email"];
-                var appPassword = _configuration["DefaultEmail:AppPassword"];
+                var fromAddress = "khanhpd0406@gmail.com";
+                var appPassword = "wnrv hmrr jjjs fooo";
 
                 var smtpClient = new SmtpClient
                 {

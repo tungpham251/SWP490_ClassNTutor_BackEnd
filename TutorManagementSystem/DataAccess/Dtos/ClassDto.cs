@@ -6,6 +6,7 @@ namespace DataAccess.Dtos
     {
         public long ClassId { get; set; }
         public string? ClassName { get; set; }
+        public string? TutorName { get; set; }
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
         public long Price { get; set; }
@@ -20,12 +21,14 @@ namespace DataAccess.Dtos
 
     public class AddClassDto
     {
+        [Range(0, long.MaxValue)]
         public long TutorId { get; set; }
         [Required]
         public string? ClassName { get; set; }
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
         public long Price { get; set; }
+        [Range(0, long.MaxValue)]
         public long SubjectId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -41,9 +44,20 @@ namespace DataAccess.Dtos
         public string? Status { get; set; }
     }
 
-    public class ClassOfTutorRequestDto
+    public class ClassForTutorRequestDto
     {
-        public int TutorId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long TutorId { get; set; }
+        public string? SearchWord { get; set; }
+        [Required]
+        public PagingRequest PagingRequest { get; set; } = null!;
+        public string? Status { get; set; }
+    }
+
+    public class ClassForParentRequestDto
+    {
+        [Range(0, long.MaxValue)]
+        public long ParentId { get; set; }
         public string? SearchWord { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
@@ -52,12 +66,15 @@ namespace DataAccess.Dtos
 
     public class UpdateClassDto
     {
+        [Range(0, long.MaxValue)]
         public long ClassId { get; set; }
+        [Range(0, long.MaxValue)]
         public long TutorId { get; set; }
         public string ClassName { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
         public long Price { get; set; }
+        [Range(0, long.MaxValue)]
         public long SubjectId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
