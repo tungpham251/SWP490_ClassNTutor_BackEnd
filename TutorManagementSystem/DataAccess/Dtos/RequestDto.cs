@@ -11,7 +11,8 @@ namespace DataAccess.Dtos
     {
         public long RequestId { get; set; }
         public string? ParentName { get; set; }
-        public long? StudentId { get; set; }
+        public string? StudentName { get; set; }
+        public string? TutorName { get; set; }
         public string? RequestType { get; set; } 
         public string? ClassName { get; set; }
         public int? Level { get; set; }

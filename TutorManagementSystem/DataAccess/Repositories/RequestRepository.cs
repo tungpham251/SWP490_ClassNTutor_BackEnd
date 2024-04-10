@@ -20,11 +20,15 @@ namespace DataAccess.Repositories
                         join p in _context.People on r.ParentId equals p.PersonId
                         join c in _context.Classes on r.ClassId equals c.ClassId
                         join s in _context.Students on r.StudentId equals s.StudentId
+                        join ps in _context.People on s.StudentId equals ps.PersonId
+                        join t in _context.Tutors on r.TutorId equals t.PersonId
+                        join pt in _context.People on t.PersonId equals pt.PersonId
                         where r.RequestId == id
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
-                            StudentId = s.StudentId,
+                            StudentName = ps.FullName,
+                            TutorName = pt.FullName,
                             ParentName = p.FullName,
                             RequestType = r.RequestType,
                             ClassName = c.ClassName,
@@ -46,11 +50,15 @@ namespace DataAccess.Repositories
                         join p in _context.People on r.ParentId equals p.PersonId
                         join c in _context.Classes on r.ClassId equals c.ClassId
                         join s in _context.Students on r.StudentId equals s.StudentId
+                        join ps in _context.People on s.StudentId equals ps.PersonId
+                        join t in _context.Tutors on r.TutorId equals t.PersonId
+                        join pt in _context.People on t.PersonId equals pt.PersonId
                         where r.ParentId == parentId
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
-                            StudentId = s.StudentId,
+                            StudentName = ps.FullName,
+                            TutorName = pt.FullName,
                             ParentName = p.FullName,
                             RequestType = r.RequestType,
                             ClassName = c.ClassName,
@@ -78,11 +86,15 @@ namespace DataAccess.Repositories
                         join p in _context.People on r.ParentId equals p.PersonId
                         join c in _context.Classes on r.ClassId equals c.ClassId
                         join s in _context.Students on r.StudentId equals s.StudentId
+                        join ps in _context.People on s.StudentId equals ps.PersonId
+                        join t in _context.Tutors on r.TutorId equals t.PersonId
+                        join pt in _context.People on t.PersonId equals pt.PersonId
                         where r.TutorId == tutorId
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
-                            StudentId = s.StudentId,
+                            StudentName = ps.FullName,
+                            TutorName = pt.FullName,
                             ParentName = p.FullName,
                             RequestType = r.RequestType,
                             ClassName = c.ClassName,
