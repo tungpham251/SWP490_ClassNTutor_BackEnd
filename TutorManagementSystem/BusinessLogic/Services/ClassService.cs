@@ -51,7 +51,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<ClassDto>> GetClasses(ClassRequestDto entity)
         {
-            var search = _classRepository.SearchClass(entity.SearchWord, entity.Status);
+            var search = _classRepository.SearchClass(entity.SearchWord!, entity.Status!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
@@ -67,9 +67,26 @@ namespace BusinessLogic.Services
             return new ViewPaging<ClassDto>(result, pagination);
         }
 
-        public async Task<ViewPaging<ClassDto>> GetClassesOfTutor(ClassOfTutorRequestDto entity)
+        public async Task<ViewPaging<ClassDto>> GetClassesForTutor(ClassForTutorRequestDto entity)
         {
-            var search = _classRepository.SearchClassOfTutor(entity.TutorId, entity.SearchWord, entity.Status);
+            var search = _classRepository.SearchClassForTutor(entity.TutorId, entity.SearchWord!, entity.Status!);
+
+            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<ClassDto>>(pagingList);
+
+            return new ViewPaging<ClassDto>(result, pagination);
+        }
+
+        public async Task<ViewPaging<ClassDto>> GetClassesForParent(ClassForParentRequestDto entity)
+        {
+            var search = _classRepository.SearchClassForParent(entity.ParentId, entity.SearchWord!, entity.Status!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
@@ -139,6 +156,45 @@ namespace BusinessLogic.Services
             if (classDetails.ClassMembers != null)
                 result.StudentInformationDto = _mapper.Map<IEnumerable<StudentInformationDto>>(classDetails.ClassMembers);
             return result;
+        }
+
+        public async Task<ViewPaging<StudentDto>> GetStudentsInClass(StudentInClassRequestDto entity)
+        {
+            var search = _classRepository.SearchStudentInParent(entity.SearchWord!);
+
+            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                .Take(entity.PagingRequest.PageSize).OrderBy(x => x.StudentId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<StudentDto>>(pagingList);
+
+
+            return new ViewPaging<StudentDto>(result, pagination);
+        }
+
+        public async Task<bool> AddStudentsInClass(List<AddStudentInClassRequestDto> entity)
+        {
+            try
+            {
+                foreach (var item in entity)
+                {
+                    var findLast = await _context.ClassMembers.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                    var classMember = _mapper.Map<ClassMember>(item);
+                    classMember.Id = findLast!.Id + 1;
+                    classMember.Status = "CREATED";
+                    await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

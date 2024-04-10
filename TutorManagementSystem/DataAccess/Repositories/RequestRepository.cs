@@ -39,18 +39,19 @@ namespace DataAccess.Repositories
             return query;
         }
 
-        public IQueryable<RequestDto> SearchRequest(int subjectId)
+        public IQueryable<RequestDto> SearchRequestsForParent(long parentId, long subjectId)
         {
             var query = from r in _context.Requests
                         join sj in _context.Subjects on r.SubjectId equals sj.SubjectId
                         join p in _context.People on r.ParentId equals p.PersonId
                         join c in _context.Classes on r.ClassId equals c.ClassId
                         join s in _context.Students on r.StudentId equals s.StudentId
+                        where r.ParentId == parentId
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
                             StudentId = s.StudentId,
-                            ParentName = p.FullName, 
+                            ParentName = p.FullName,
                             RequestType = r.RequestType,
                             ClassName = c.ClassName,
                             Level = r.Level,
@@ -70,7 +71,7 @@ namespace DataAccess.Repositories
             return query.OrderBy(x => x.RequestId);
         }
 
-        public IQueryable<RequestDto> SearchRequestOfTutor(int tutorId, int subjectId)
+        public IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, long subjectId)
         {
             var query = from r in _context.Requests
                         join sj in _context.Subjects on r.SubjectId equals sj.SubjectId

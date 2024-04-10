@@ -24,6 +24,14 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [Authorize(Roles = "TUTOR")]
+        [HttpGet("get-class-for-tutor")]
+        public async Task<IActionResult> GetClassForTutor([FromQuery] ClassForTutorRequestDto entity)
+        {
+            var result = await _classService.GetClassesForTutor(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
         [Authorize(Roles = "STAFF,TUTOR")]
         [HttpGet("get-class-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] long id)
@@ -39,14 +47,6 @@ namespace API.Controllers
         {
             var result = await _classService.AddClass(entity).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [Authorize(Roles = "STAFF,TUTOR")]
-        [HttpGet("get-classes-of-tutor")]
-        public async Task<IActionResult> GetClassesOfTutor([FromQuery] ClassOfTutorRequestDto entity)
-        {
-            var result = await _classService.GetClassesOfTutor(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
@@ -74,6 +74,31 @@ namespace API.Controllers
         {
             var result = await _classService.GetClassByIdIncludeStudentInformation(id).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "PARENT")]
+        [HttpGet("get-class-for-parent")]
+        public async Task<IActionResult> GetClassForParent([FromQuery] ClassForParentRequestDto entity)
+        {
+            var result = await _classService.GetClassesForParent(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR")]
+        [HttpPost("add-students-in-class")]
+        public async Task<IActionResult> AddStudentsInClass([FromBody] List<AddStudentInClassRequestDto> entity)
+        {
+            var result = await _classService.AddStudentsInClass(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR")]
+        [HttpGet("get-students-in-class")]
+        public async Task<IActionResult> GetStudentsInClass([FromQuery] StudentInClassRequestDto entity)
+        {
+            var result = await _classService.GetStudentsInClass(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
     }
