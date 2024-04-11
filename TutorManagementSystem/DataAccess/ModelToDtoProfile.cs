@@ -53,6 +53,9 @@ namespace DataAccess
                 .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject.SubjectName));
 
             CreateMap<Person, ProfileDto>();
+            CreateMap<Tutor, GetTutorDto>();
+            CreateMap<Account, AccountDto>().ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName));
+            CreateMap<Staff, GetStaffDto>();
         }
 
     }

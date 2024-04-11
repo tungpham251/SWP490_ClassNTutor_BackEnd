@@ -15,6 +15,7 @@ namespace BusinessLogic.Services
         private readonly IS3StorageService _s3storageService;
         private readonly IPersonRepository _personRepository;
         private readonly IMapper _mapper;
+        private const int STAFF = 0;
         private const int TUTOR = 1;
         private const int PARENT = 2;
 
@@ -65,13 +66,18 @@ namespace BusinessLogic.Services
             return new ViewPaging<PersonDto>(result, pagination);
         }
 
-        public async Task<ProfileDto> GetProfileByCurrentUser(string personId)
+        public async Task<ProfileDto> GetProfileByPersonId(long personId)
         {
-            var currentPersonId = long.Parse(personId);
-            var profile = await _context.People.Include(p => p.Account)
+            var currentPersonId = personId;
+            var profile = await _context.People
+                           .Include(p => p.Account)
                            .ThenInclude(a => a.Role)
+                           .Include(p => p.Staff)
+                           .Include(p => p.Tutor)
                            .FirstOrDefaultAsync(p => p.PersonId.Equals(currentPersonId))
                            .ConfigureAwait(false);
+            if (profile == null)
+                return null;
             var result = _mapper.Map<ProfileDto>(profile);
             result.Students = Enumerable.Empty<StudentDto>();
             result.SubjectTutors = Enumerable.Empty<SubjectTutorDto>();
@@ -104,17 +110,26 @@ namespace BusinessLogic.Services
         {
             try
             {
-                if (!FileHelper.IsImage(entity.Avatar.FileName))
+                var avatar = "";
+                if (entity.Avatar != null)
                 {
-                    return false;
+                    avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
                 }
+
                 var currentPersonId = long.Parse(personId);
-                var currentUser = await _context.People.FirstOrDefaultAsync(p => p.PersonId.Equals(currentPersonId)).ConfigureAwait(false);
-                var avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
+                var currentUser = await _context.People
+                                                    .Include(p => p.Account)
+                                                    .ThenInclude(a => a.Role)
+                                                    .FirstOrDefaultAsync(p => p.PersonId.Equals(currentPersonId))
+                                                    .ConfigureAwait(false);
 
                 var lastPerson = await _context.People.OrderBy(x => x.PersonId).LastOrDefaultAsync().ConfigureAwait(false);
 
-                currentUser.UserAvatar = avatar;
+                if (entity.Avatar != null)
+                {
+                    currentUser.UserAvatar = avatar;
+                }
+
                 currentUser.Address = entity.Address!;
                 currentUser.Dob = entity.Dob;
                 currentUser.Gender = entity.Gender!;
@@ -122,11 +137,91 @@ namespace BusinessLogic.Services
                 currentUser.Phone = entity.Phone!;
 
                 _context.People.Update(currentUser);
+
+                if (currentUser.Account.RoleId.Equals(STAFF))
+                {
+                    var staff = await _context.Staffs
+                                                    .FirstOrDefaultAsync(p => p.PersonId.Equals(currentPersonId))
+                                                    .ConfigureAwait(false);
+                    staff.StaffType = entity.Staff.StaffType;
+                    _context.Staffs.Update(staff);
+                }
+
+                if (currentUser.Account.RoleId.Equals(TUTOR))
+                {
+                    var tutor = await _context.Tutors
+                                                     .FirstOrDefaultAsync(p => p.PersonId.Equals(currentPersonId))
+                                                     .ConfigureAwait(false);
+                    tutor.Cmnd = entity.Tutor.Cmnd;
+
+                    var frontCmnd = "";
+                    var backCmnd = "";
+                    var cv = "";
+                    if (entity.Tutor.FrontCmnd != null)
+                    {
+                        frontCmnd = await _s3storageService.UploadFileToS3(entity.Tutor.FrontCmnd!).ConfigureAwait(false);
+
+                    }
+                    if (entity.Tutor.BackCmnd != null)
+                    {
+
+                        backCmnd = await _s3storageService.UploadFileToS3(entity.Tutor.BackCmnd!).ConfigureAwait(false);
+                    }
+                    if (entity.Tutor.Cv != null)
+                    {
+
+                        cv = await _s3storageService.UploadFileToS3(entity.Tutor.Cv!).ConfigureAwait(false);
+                    }
+
+                    if (entity.Tutor.FrontCmnd != null)
+                    {
+                        tutor.FrontCmnd = frontCmnd;
+
+                    }
+                    if (entity.Tutor.BackCmnd != null)
+                    {
+                        tutor.BackCmnd = backCmnd;
+
+                    }
+                    if (entity.Tutor.Cv != null)
+                    {
+                        tutor.Cv = cv;
+                    }
+
+                    tutor.EducationLevel = entity.Tutor.EducationLevel;
+                    tutor.School = entity.Tutor.School;
+                    tutor.GraduationYear = entity.Tutor.GraduationYear;
+                    tutor.About = entity.Tutor.About;
+                    _context.Tutors.Update(tutor);
+
+                }
+
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
                 return true;
             }
             catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteStaff(long id)
+        {
+            try
+            {
+                var staff = await _context.Accounts.FirstOrDefaultAsync(p => p.PersonId.Equals(id))
+                                                    .ConfigureAwait(false);
+                if (staff == null)
+                {
+                    return false;
+                }
+                staff.Status = "SUSPEND";
+                _context.Accounts.Update(staff);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch
             {
                 return false;
             }

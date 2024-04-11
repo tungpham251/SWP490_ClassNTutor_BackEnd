@@ -34,7 +34,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [Authorize(Roles = "ADMIN,STAFF,TUTOR, PARENT")]
+        //[Authorize(Roles = "STAFF,TUTOR")]
         [HttpGet("get-profile")]
         public async Task<IActionResult> GetProfileByCurrentUser()
         {
@@ -43,7 +43,7 @@ namespace API.Controllers
             if (string.IsNullOrEmpty(personId))
                 return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
 
-            var result = await _personService.GetProfileByCurrentUser(personId).ConfigureAwait(false);
+            var result = await _personService.GetProfileByPersonId(long.Parse(personId)).ConfigureAwait(false);
             if (result == null)
             {
                 return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
@@ -52,7 +52,7 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Roles = "ADMIN,STAFF,TUTOR, PARENT")]
+        //[Authorize(Roles = "STAFF,TUTOR")]
         [HttpPut("edit-profile")]
         public async Task<IActionResult> EditProfileCurrentUser([FromForm] EditProfileDto entity)
         {
@@ -62,6 +62,33 @@ namespace API.Controllers
                 return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
 
             var result = await _personService.EditProfileCurrentUser(entity, personId).ConfigureAwait(false);
+            if (result == false)
+            {
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            }
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+
+        //[Authorize(Roles = "STAFF,TUTOR")]
+        [HttpGet("get-profile/{id}")]
+        public async Task<IActionResult> GetProfileByPersonId(long id)
+        {
+
+            var result = await _personService.GetProfileByPersonId(id).ConfigureAwait(false);
+            if (result == null)
+            {
+                return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            }
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        //[Authorize(Roles = "STAFF,TUTOR")]
+        [HttpDelete("delete-staff/{id}")]
+        public async Task<IActionResult> DeleteStaff(long id)
+        {
+
+            var result = await _personService.DeleteStaff(id).ConfigureAwait(false);
             if (result == false)
             {
                 return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
