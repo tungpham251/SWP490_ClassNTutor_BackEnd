@@ -17,25 +17,26 @@ namespace DataAccess.Dtos
         public string Address { get; set; } = null!;
         public DateTime? Dob { get; set; }
         public IEnumerable<SubjectTutorDto>? SubjectTutors { get; set; }
-        public IEnumerable<StudentDto>? Students{ get; set; }
+        public IEnumerable<StudentDto>? Students { get; set; }
+        public GetTutorDto Tutor { get; set; }
+        public GetStaffDto Staff { get; set; }
+        public AccountDto Account { get; set; }
     }
 
     public class EditProfileDto
     {
-        [Required]
-        [MaxLength(100)]
         public string? FullName { get; set; }
         public IFormFile? Avatar { get; set; }
 
-        [Required]
-        [Phone]
         public string? Phone { get; set; }
 
-        [Required]
         public string? Gender { get; set; }
 
         public string? Address { get; set; }
 
         public DateTime? Dob { get; set; }
+
+        public EditTutorDto Tutor { get; set; }
+        public EditStaffDto Staff { get; set; }
     }
 }

@@ -82,9 +82,9 @@ namespace BusinessLogic.Services
             return new ViewPaging<ResponsePaymentDto>(result, pagination);
         }
 
-        public async Task<bool> UpdatePayment(long paymentId, string paymentDescription)
+        public async Task<bool> UpdatePayment(long paymentId, string status)
         {
-            var result = await _paymentRepository.UpdateDescriptionPayment(paymentId, paymentDescription).ConfigureAwait(false);
+            var result = await _paymentRepository.UpdateDescriptionPayment(paymentId, status).ConfigureAwait(false);
             return result;
         }
     }
