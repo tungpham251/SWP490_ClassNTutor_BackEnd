@@ -64,12 +64,12 @@ namespace DataAccess.Repositories
             return false;
         }
 
-        public async Task<bool> UpdateDescriptionPayment(long paymentId, string paymentDescription)
+        public async Task<bool> UpdateDescriptionPayment(long paymentId, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
             if (payment != null)
             {
-                payment.PaymentDesc = paymentDescription;
+                payment.Status = status;
                 _context.Payments.Update(payment);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
