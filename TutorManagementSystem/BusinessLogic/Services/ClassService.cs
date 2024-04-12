@@ -182,11 +182,24 @@ namespace BusinessLogic.Services
             {
                 foreach (var item in entity)
                 {
-                    var findLast = await _context.ClassMembers.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
-                    var classMember = _mapper.Map<ClassMember>(item);
-                    classMember.Id = findLast!.Id + 1;
-                    classMember.Status = "CREATED";
-                    await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    var classMemberExist = await _context.ClassMembers.Where(x => x.ClassId == item.ClassId
+                         && x.StudentId == item.StudentId)
+                        .FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (classMemberExist != null && classMemberExist.Status.Equals("DELETED"))
+                    {
+                        classMemberExist.Status = "CREATED";
+                        _context.ClassMembers.Update(classMemberExist);
+                    }
+
+                    if (classMemberExist == null)
+                    {
+                        var findLast = await _context.ClassMembers.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                        var classMember = _mapper.Map<ClassMember>(item);
+                        classMember.Id = findLast!.Id + 1;
+                        classMember.Status = "CREATED";
+                        await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    }
+                   
                     await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 return true;
@@ -201,7 +214,7 @@ namespace BusinessLogic.Services
         {
             try
             {
-                var classMember = await _context.ClassMembers.Where(x => x.ClassId == entity.ClassId 
+                var classMember = await _context.ClassMembers.Where(x => x.ClassId == entity.ClassId
                 && x.StudentId == entity.StudentId)
                     .FirstOrDefaultAsync().ConfigureAwait(false);
                 if (classMember == null) return false;
