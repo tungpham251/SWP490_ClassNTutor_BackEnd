@@ -108,6 +108,11 @@ namespace DataAccess.Dtos
         public string Phone { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public string Address { get; set; } = null!;
+        public string ParentName { get; set; } = null!;
+        public string ParentPhone { get; set; } = null!;
+        public int StudentLevel { get; set; }
+        public string StatusClassMember { get; set; } = null!;
+
     }
 
     public class AddClassIncludeScheduleDto
