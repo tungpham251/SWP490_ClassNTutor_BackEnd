@@ -197,20 +197,18 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<bool> DeleteStudentsInClass(List<long> entity)
+        public async Task<bool> DeleteStudentInClass(DeleteStudentInClassRequestDto entity)
         {
             try
             {
-                foreach (var item in entity)
-                {
-                    var classMember = await _context.ClassMembers.Where(x=> x.Id == item)
-                        .FirstOrDefaultAsync().ConfigureAwait(false);
-                    if(classMember == null) return false;
-                   
-                    classMember.Status = "DELETED";
-                    _context.ClassMembers.Update(classMember);
-                    await _context.SaveChangesAsync().ConfigureAwait(false);
-                }
+                var classMember = await _context.ClassMembers.Where(x => x.ClassId == entity.ClassId 
+                && x.StudentId == entity.StudentId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+                if (classMember == null) return false;
+
+                classMember.Status = "DELETED";
+                _context.ClassMembers.Update(classMember);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
             catch (Exception)

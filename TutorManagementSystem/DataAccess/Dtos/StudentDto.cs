@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,9 +31,20 @@ namespace DataAccess.Dtos
 
     public class AddStudentInClassRequestDto
     {
+        [Range(0, long.MaxValue)]
         public long Id { get; set; }
+        [Range(0, long.MaxValue)]
         public long ClassId { get; set; }
+        [Range(0, long.MaxValue)]
         public long StudentId { get; set; }
         public string Status { get; set; } = null!;
+    }
+
+    public class DeleteStudentInClassRequestDto
+    {
+        [Range(0, long.MaxValue)]
+        public long ClassId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long StudentId { get; set; }
     }
 }
