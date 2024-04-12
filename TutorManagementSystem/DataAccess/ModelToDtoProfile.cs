@@ -41,8 +41,12 @@ namespace DataAccess
                 .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.UserAvatar))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Phone))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Gender))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Address));
-
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Address))                              
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent == null ? "null" : src.Student.Parent.FullName))
+                .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent == null ? "null" : src.Student.Parent.Phone))
+                .ForMember(dest => dest.StudentLevel, opt => opt.MapFrom(src => src.Student == null ? -1 : src.Student.StudentLevel))
+                .ForMember(dest => dest.StatusClassMember, opt => opt.MapFrom(src => src.Status));
+                
             CreateMap<Payment, ResponsePaymentDto>()
                 .ForMember(dest => dest.PayerName, opt => opt.MapFrom(src => src.Payer == null ? "null" : src.Payer.Person == null ? "null" : src.Payer.Person.FullName))
                 .ForMember(dest => dest.RequestName, opt => opt.MapFrom(src => src.Request == null ? "null" : src.Request.Person == null ? "null" : src.Request.Person.FullName))
