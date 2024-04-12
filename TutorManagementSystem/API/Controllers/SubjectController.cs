@@ -15,17 +15,14 @@ namespace API.Controllers
         {
             _subjectService = subjectService;
         }
-
-
-        [Authorize(Roles = "STAFF")]
+       
         [HttpGet("get-subjects")]
         public async Task<IActionResult> GetSubjects([FromQuery] SubjectRequestDto entity)
         {
             var result = await _subjectService.GetSubjects(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
-
-        [Authorize(Roles = "STAFF")]
+       
         [HttpGet("get-subject-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
