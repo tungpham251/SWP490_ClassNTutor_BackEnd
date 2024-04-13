@@ -56,6 +56,7 @@ namespace BusinessLogic.Services
 
                 newRequest.RequestId = lastRequest!.RequestId + 1;
                 newRequest.UpdatedAt = newRequest.CreatedAt = DateTime.Now;
+                newRequest.Status = newRequest.Status = "PENDING";
 
                 await _context.Requests.AddAsync(newRequest).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -142,5 +143,55 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+        public async Task<UpdateRequestDto> CancelRequest(long requestId)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == requestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest != null)
+                {
+                    findRequest.Status = "CANCELLED";
+
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
+                return null;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<UpdateRequestDto> DeclineRequest(long requestId)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == requestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest != null)
+                {
+                    findRequest.Status = "REJECTED";
+
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
+                return null;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

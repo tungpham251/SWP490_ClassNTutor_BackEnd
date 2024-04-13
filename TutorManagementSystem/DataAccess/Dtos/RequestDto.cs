@@ -60,6 +60,7 @@ namespace DataAccess.Dtos
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
         public string? Status { get; set; }
+        public string? RequestType { get; set; }
     }
 
     
