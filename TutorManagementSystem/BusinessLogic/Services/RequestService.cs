@@ -11,13 +11,15 @@ namespace BusinessLogic.Services
     {
         private readonly ClassNTutorContext _context;
         private readonly IRequestRepository _requestRepository;
+        private readonly IClassService _classService;
         private readonly IMapper _mapper;
 
-        public RequestService(ClassNTutorContext context, IRequestRepository requestRepository, IMapper mapper)
+        public RequestService(ClassNTutorContext context, IRequestRepository requestRepository, IMapper mapper, IClassService classService)
         {
             _context = context;
             _requestRepository = requestRepository;
             _mapper = mapper;
+            _classService = classService;
         }
 
         public async Task<UpdateRequestDto> AcceptRequest(long requestId)
@@ -28,12 +30,25 @@ namespace BusinessLogic.Services
                     .FirstOrDefaultAsync().ConfigureAwait(false);
 
                 if (findRequest != null
-                    && findRequest.Status.ToLower().Equals("JOIN".ToLower()))
+                    && findRequest.RequestType.ToLower().Equals("JOIN".ToLower()))
                 {
-                    findRequest.RequestType = "ACCEPT";
+                    findRequest.Status = "ACCEPTED";
+                    List<AddStudentInClassRequestDto> list = new List<AddStudentInClassRequestDto>();
+                    AddStudentInClassRequestDto addStudentInClassRequestDto = new AddStudentInClassRequestDto
+                    {
+                        Id = 1,
+                        ClassId = (long)findRequest.ClassId,
+                        StudentId = findRequest.StudentId,
+                        Status = ""
+                    };
+                    list.Add(addStudentInClassRequestDto);
+
+                    await _classService.AddStudentsInClass(list);
 
                     _context.Requests.Update(findRequest);
                     await _context.SaveChangesAsync().ConfigureAwait(false);
+
+
 
                     return _mapper.Map<UpdateRequestDto>(findRequest);
                 }
