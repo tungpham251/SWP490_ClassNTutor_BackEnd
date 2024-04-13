@@ -51,5 +51,24 @@ namespace API.Controllers
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
+
+
+        [Authorize(Roles = "TUTOR,PARENT")]
+        [HttpPut("update-request")]
+        public async Task<IActionResult> UpdateRequest([FromForm] UpdateRequestDto entity)
+        {
+            var result = await _requestService.UpdateRequest(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR,PARENT")]
+        [HttpPut("accept-request")]
+        public async Task<IActionResult> AcceptRequest(long requestId)
+        {
+            var result = await _requestService.AcceptRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
     }
 }

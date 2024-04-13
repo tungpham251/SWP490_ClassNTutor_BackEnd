@@ -19,6 +19,7 @@ namespace DataAccess
             CreateMap<UpdateScheduleDto, Schedule>();
             CreateMap<AddScheduleDto, Schedule>();
             CreateMap<AddRequestDto, Request>();
+            CreateMap<UpdateRequestDto, Request>();
             CreateMap<AddStudentDto, Student>();
             CreateMap<AddSubjectTutorDto, SubjectTutor>();
             CreateMap<CreatePaymentDto, Payment>();

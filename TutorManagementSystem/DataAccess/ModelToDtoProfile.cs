@@ -28,6 +28,8 @@ namespace DataAccess
                 .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class!.ClassName))
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent.Email))
                 .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.SubjectName));
+            CreateMap<Request, UpdateRequestDto>();
+
             CreateMap<Person, PersonDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Account!.Email))
                  .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Account!.Role.RoleName))
