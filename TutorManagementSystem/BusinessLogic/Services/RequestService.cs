@@ -56,6 +56,7 @@ namespace BusinessLogic.Services
 
                 newRequest.RequestId = lastRequest!.RequestId + 1;
                 newRequest.UpdatedAt = newRequest.CreatedAt = DateTime.Now;
+                newRequest.Status = newRequest.Status = "PENDING";
 
                 await _context.Requests.AddAsync(newRequest).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -79,7 +80,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId,entity.Status);
+            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId,entity.Status, entity.RequestType);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -97,7 +98,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForTutor(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId, entity.Status);
+            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId, entity.Status, entity.RequestType);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -142,5 +143,55 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+        public async Task<UpdateRequestDto> CancelRequest(long requestId)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == requestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest != null)
+                {
+                    findRequest.Status = "CANCELLED";
+
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
+                return null;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<UpdateRequestDto> DeclineRequest(long requestId)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == requestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest != null)
+                {
+                    findRequest.Status = "REJECTED";
+
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
+                return null;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

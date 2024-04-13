@@ -70,5 +70,24 @@ namespace API.Controllers
             if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
+
+
+        [Authorize(Roles = "PARENT")]
+        [HttpPut("cancel-request")]
+        public async Task<IActionResult> CancelRequest(long requestId)
+        {
+            var result = await _requestService.CancelRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR")]
+        [HttpPut("decline-request")]
+        public async Task<IActionResult> DeclineRequest(long requestId)
+        {
+            var result = await _requestService.DeclineRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
     }
 }
