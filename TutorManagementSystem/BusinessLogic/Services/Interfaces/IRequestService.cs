@@ -15,5 +15,8 @@ namespace BusinessLogic.Services.Interfaces
         Task<bool> UpdateRequest(UpdateRequestDto entity);
 
         Task<UpdateRequestDto> AcceptRequest(long requestId);
+
+        Task<UpdateRequestDto> CancelRequest(long requestId);
+        Task<UpdateRequestDto> DeclineRequest(long requestId);
     }
 }
