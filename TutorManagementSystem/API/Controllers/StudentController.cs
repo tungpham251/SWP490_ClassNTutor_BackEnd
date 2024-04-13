@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "PARENT")]
-        [HttpGet("update-student")]
+        [HttpPut("update-student")]
         public async Task<IActionResult> UpdateStudent([FromQuery] UpdateStudentDto entity)
         {
             var result = await _studentService.UpdateStudent(entity).ConfigureAwait(false);
