@@ -23,6 +23,7 @@ namespace DataAccess.Dtos
     }
     public class UpdateScheduleDto
     {
+        [Required]
         public long Id { get; set; }
         public string DayOfWeek { get; set; } = null!;
         public TimeSpan SessionStart { get; set; }
