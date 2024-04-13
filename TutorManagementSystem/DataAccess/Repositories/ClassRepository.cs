@@ -165,6 +165,8 @@ namespace DataAccess.Repositories
         public async Task<Class> GetClassByIdIncludeStudentInformation(long id)
         {
             var result = await _context.Classes
+                             .Include(c => c.Tutor).ThenInclude(c=>c.Person)
+                             .Include(c => c.Subject)
                              .Include(c => c.Schedules)
                              .Include(c => c.ClassMembers)
                              .ThenInclude(c => c.Student)
