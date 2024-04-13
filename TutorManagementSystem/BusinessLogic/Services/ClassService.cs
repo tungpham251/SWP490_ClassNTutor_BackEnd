@@ -295,8 +295,8 @@ namespace BusinessLogic.Services
                 //update schedule
                 if (entity.UpdateScheduleDto != null)
                 {
-                    var addSchedules = entity.UpdateScheduleDto.Where(s => s.Id.Equals(0L));
-                    var updateSchedule = entity.UpdateScheduleDto.Where(s => !s.Id.Equals(0L));
+                    var addSchedules = entity.UpdateScheduleDto.Where(s => s.Id.Equals(-1L));
+                    var updateSchedule = entity.UpdateScheduleDto.Where(s => !s.Id.Equals(-1L));
                     //add new schedule
                     if (addSchedules.Any())
                     {

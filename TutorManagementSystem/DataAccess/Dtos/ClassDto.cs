@@ -103,7 +103,8 @@ namespace DataAccess.Dtos
 
     }
     public class StudentInformationDto
-    {
+    {   
+        public long StudentId { get; set; }
         public string FullName { get; set; } = null!;
         public string? UserAvatar { get; set; }
         public string Phone { get; set; } = null!;
