@@ -51,5 +51,14 @@ namespace API.Controllers
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
+
+        [Authorize(Roles = "TUTOR,PARENT")]
+        [HttpPost("update-request")]
+        public async Task<IActionResult> UpdateRequest([FromForm] UpdateRequestDto entity)
+        {
+            var result = await _requestService.UpdateRequest(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
     }
 }

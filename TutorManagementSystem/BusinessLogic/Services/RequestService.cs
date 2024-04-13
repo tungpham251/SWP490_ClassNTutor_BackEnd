@@ -86,5 +86,35 @@ namespace BusinessLogic.Services
 
             return new ViewPaging<RequestDto>(result, pagination);
         }
+
+        public async Task<bool> UpdateRequest(UpdateRequestDto entity)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == entity.RequestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest == null) return false;
+
+                findRequest.ParentId = entity.ParentId;
+                findRequest.TutorId = entity.TutorId;
+                findRequest.StudentId = entity.StudentId;
+                findRequest.RequestType = entity.RequestType!;
+                findRequest.ClassId = entity.ClassId;
+                findRequest.Level = entity.Level;
+                findRequest.SubjectId = entity.SubjectId;
+                findRequest.Price = entity.Price;
+                findRequest.Status = entity.Status!;
+
+                _context.Requests.Update(findRequest);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

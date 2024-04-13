@@ -43,7 +43,7 @@ namespace DataAccess.Repositories
             return query;
         }
 
-        public IQueryable<RequestDto> SearchRequestsForParent(long parentId, long subjectId)
+        public IQueryable<RequestDto> SearchRequestsForParent(long parentId, long subjectId, string status)
         {
             var query = from r in _context.Requests
                         join sj in _context.Subjects on r.SubjectId equals sj.SubjectId
@@ -76,10 +76,15 @@ namespace DataAccess.Repositories
                 query = query.Where(x => x.SubjectId == subjectId);
             }
 
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(c => c.Status!.Equals(status));
+            }
+
             return query.OrderBy(x => x.RequestId);
         }
 
-        public IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, long subjectId)
+        public IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, long subjectId, string status)
         {
             var query = from r in _context.Requests
                         join sj in _context.Subjects on r.SubjectId equals sj.SubjectId
@@ -110,6 +115,11 @@ namespace DataAccess.Repositories
             if (subjectId >= 0)
             {
                 query = query.Where(x => x.SubjectId == subjectId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(c => c.Status!.Equals(status));
             }
 
             return query.OrderBy(x => x.RequestId);

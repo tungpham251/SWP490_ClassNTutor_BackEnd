@@ -43,6 +43,8 @@ namespace DataAccess
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Address));
 
             CreateMap<Payment, ResponsePaymentDto>();
+
+            CreateMap<Request, UpdateRequestDto>();
         }
 
     }
