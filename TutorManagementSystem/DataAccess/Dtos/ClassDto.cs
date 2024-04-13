@@ -83,13 +83,14 @@ namespace DataAccess.Dtos
 
     public class ClassDetailsIncludeStudentInfoDto
     {
-
+        public long ClassId { get; set; }
         public long TutorId { get; set; }
         public string TutorName { get; set; }
         public string ClassName { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
         public long Price { get; set; }
+        public string SubjectName { get; set; }
         public long SubjectId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
