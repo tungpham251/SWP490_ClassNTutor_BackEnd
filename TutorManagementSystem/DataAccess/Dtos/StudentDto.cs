@@ -54,6 +54,13 @@ namespace DataAccess.Dtos
         public long ParentId { get; set; }
         public int StudentLevel { get; set; }
         public string? Status { get; set; }
+        public long PersonId { get; set; }
+        public string FullName { get; set; } = null!;
+        public string? UserAvatar { get; set; }
+        public string Phone { get; set; } = null!;
+        public string Gender { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public DateTime? Dob { get; set; }
     }
 
     public class UpdateStudentDto
@@ -62,5 +69,12 @@ namespace DataAccess.Dtos
         public long ParentId { get; set; }
         public int StudentLevel { get; set; }
         public string? Status { get; set; }
+        public long PersonId { get; set; }
+        public string FullName { get; set; } = null!;
+        public string? UserAvatar { get; set; }
+        public string Phone { get; set; } = null!;
+        public string Gender { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public DateTime? Dob { get; set; }
     }
 }
