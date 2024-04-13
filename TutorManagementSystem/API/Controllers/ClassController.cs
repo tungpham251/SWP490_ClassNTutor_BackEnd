@@ -84,7 +84,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "STAFF,TUTOR,PARENT")]
         [HttpGet("get-class-details/{id}")]
         public async Task<IActionResult> GetClassByIdIncludeStudentInformation([FromRoute] long id)
         {
