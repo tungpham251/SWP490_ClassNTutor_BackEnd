@@ -30,5 +30,38 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [HttpGet("get-filter-schedule")]
+        public async Task<IActionResult> GetFilterSchedule([FromQuery] string from, [FromQuery] string to)
+        {
+            try
+            {
+                TimeSpan fromTime;
+                TimeSpan toTime;
+
+                if (!TimeSpan.TryParse(from, out fromTime))
+                {
+                    return BadRequest("Invalid 'from' time format. The correct format is 'hh:mm:ss'.");
+                }
+
+                if (!TimeSpan.TryParse(to, out toTime))
+                {
+                    return BadRequest("Invalid 'to' time format. The correct format is 'hh:mm:ss'.");
+                }
+                var result = await _scheduleService.FilterScheduleFromTo(fromTime, toTime).ConfigureAwait(false);
+
+                if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+                return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+            }
+            catch (Exception e)
+            {
+                if (e is ArgumentException)
+                {
+                    return BadRequest(e.Message);
+                }
+
+                throw;
+            }
+        }
+
     }
 }

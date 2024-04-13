@@ -2,6 +2,7 @@
 using BusinessLogic.Services.Interfaces;
 using DataAccess.Dtos;
 using DataAccess.Models;
+using DataAccess.Repositories;
 using DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,16 +12,18 @@ namespace BusinessLogic.Services
     {
         private readonly ClassNTutorContext _context;
         private readonly IMapper _mapper;
+        private readonly IScheduleRepository _scheduleRepository;
 
-        public ScheduleService(ClassNTutorContext context, IMapper mapper)
+        public ScheduleService(ClassNTutorContext context, IMapper mapper, IScheduleRepository scheduleRepository)
         {
             _context = context;
             _mapper = mapper;
+            _scheduleRepository = scheduleRepository;
         }
 
         public async Task<IEnumerable<ScheduleDto>> GetScheduleForCurrentUserAndClassId(long personId, long classId)
         {
-            var classes = _context.Classes.Include(c=>c.Schedules)
+            var classes = _context.Classes.Include(c => c.Schedules)
                                           .Where(c => c.TutorId.Equals(personId))
                                           .AsQueryable();
 
@@ -37,6 +40,36 @@ namespace BusinessLogic.Services
                 result = _mapper.Map<List<ScheduleDto>>(classes.SelectMany(c => c.Schedules));
             }
             return  result;
+        }
+
+        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(TimeSpan from, TimeSpan to)
+        {
+            var data = await _scheduleRepository.FilterSchedule(from, to).ToListAsync().ConfigureAwait(false);
+            var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
+            return orderedData;
+        }
+
+        static int GetDayOfWeekOrder(string dayOfWeek)
+        {
+            switch (dayOfWeek.ToUpper())
+            {
+                case "MON":
+                    return 1;
+                case "TUE":
+                    return 2;
+                case "WED":
+                    return 3;
+                case "THU":
+                    return 4;
+                case "FRI":
+                    return 5;
+                case "SAT":
+                    return 6;
+                case "SUN":
+                    return 7;
+                default:
+                    throw new ArgumentException("Invalid day of week: " + dayOfWeek);
+            }
         }
     }
 }

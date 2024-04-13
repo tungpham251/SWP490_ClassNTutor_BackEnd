@@ -18,7 +18,7 @@ namespace BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> AddScheduleTutor(AddSubjectTutorDto entity)
+        public async Task<bool> AddSubjectTutor(AddSubjectTutorDto entity)
         {
             try
             {
@@ -33,11 +33,11 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<bool> DeleteScheduleTutor(long id)
+        public async Task<bool> DeleteSubjectTutor(long tutorId, long subjectId)
         {
             try
             {
-                var oldSubjectTutor = await _context.SubjectTutors.FirstOrDefaultAsync(s => s.TutorId.Equals(id))
+                var oldSubjectTutor = await _context.SubjectTutors.FirstOrDefaultAsync(s => s.TutorId == tutorId && s.SubjectId == subjectId)
                                                        .ConfigureAwait(false);
                 if (oldSubjectTutor == null)
                     return false;
