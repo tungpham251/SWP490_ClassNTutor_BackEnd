@@ -11,5 +11,9 @@ namespace BusinessLogic.Services.Interfaces
         Task<RequestDto> GetById(long id);
 
         Task<bool> AddRequest(AddRequestDto entity);
+
+        Task<bool> UpdateRequest(UpdateRequestDto entity);
+
+        Task<UpdateRequestDto> AcceptRequest(long requestId);
     }
 }

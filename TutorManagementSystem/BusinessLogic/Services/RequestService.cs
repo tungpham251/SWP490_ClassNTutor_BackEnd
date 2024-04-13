@@ -20,6 +20,32 @@ namespace BusinessLogic.Services
             _mapper = mapper;
         }
 
+        public async Task<UpdateRequestDto> AcceptRequest(long requestId)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == requestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest != null
+                    && findRequest.Status.ToLower().Equals("JOIN".ToLower()))
+                {
+                    findRequest.RequestType = "ACCEPT";
+
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
+                return null;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public async Task<bool> AddRequest(AddRequestDto entity)
         {
             try
@@ -53,7 +79,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId);
+            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId,entity.Status);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -71,7 +97,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForTutor(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId);
+            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId, entity.Status);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -85,6 +111,36 @@ namespace BusinessLogic.Services
 
 
             return new ViewPaging<RequestDto>(result, pagination);
+        }
+
+        public async Task<bool> UpdateRequest(UpdateRequestDto entity)
+        {
+            try
+            {
+                var findRequest = await _context.Requests.Where(x => x.RequestId == entity.RequestId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (findRequest == null) return false;
+
+                findRequest.ParentId = entity.ParentId;
+                findRequest.TutorId = entity.TutorId;
+                findRequest.StudentId = entity.StudentId;
+                findRequest.RequestType = entity.RequestType!;
+                findRequest.ClassId = entity.ClassId;
+                findRequest.Level = entity.Level;
+                findRequest.SubjectId = entity.SubjectId;
+                findRequest.Price = entity.Price;
+                findRequest.Status = entity.Status!;
+
+                _context.Requests.Update(findRequest);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
