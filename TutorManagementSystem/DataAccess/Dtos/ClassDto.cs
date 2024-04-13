@@ -135,6 +135,7 @@ namespace DataAccess.Dtos
 
     public class UpdateClassIncludeScheduleDto
     {
+        [Required]
         public long ClassId { get; set; }
         public long TutorId { get; set; }
         public string ClassName { get; set; } = null!;
