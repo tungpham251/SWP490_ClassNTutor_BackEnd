@@ -94,7 +94,9 @@ namespace DataAccess.Repositories
                         join ps in _context.People on s.StudentId equals ps.PersonId
                         join t in _context.Tutors on r.TutorId equals t.PersonId
                         join pt in _context.People on t.PersonId equals pt.PersonId
-                        where r.TutorId == tutorId
+                        where r.TutorId == tutorId 
+                        && r.Status.ToLower() != "CANCEL".ToLower()
+                        && r.Status.ToLower() != "REJECT".ToLower()
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
