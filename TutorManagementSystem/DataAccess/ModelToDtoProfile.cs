@@ -45,6 +45,7 @@ namespace DataAccess
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.Address))                              
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent == null ? "null" : src.Student.Parent.FullName))
                 .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent == null ? "null" : src.Student.Parent.Phone))
+                .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.Student == null ? -1 : src.Student.StudentId))
                 .ForMember(dest => dest.StudentLevel, opt => opt.MapFrom(src => src.Student == null ? -1 : src.Student.StudentLevel))
                 .ForMember(dest => dest.StatusClassMember, opt => opt.MapFrom(src => src.Status));
                 
