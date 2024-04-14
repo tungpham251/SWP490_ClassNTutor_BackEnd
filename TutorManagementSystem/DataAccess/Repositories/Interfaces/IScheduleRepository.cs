@@ -5,7 +5,8 @@ namespace DataAccess.Repositories.Interfaces
 {
     public interface IScheduleRepository
     {
-        IQueryable<FilterScheduleDto> FilterSchedule(TimeSpan from, TimeSpan to);
+        IQueryable<FilterScheduleDto> FilterScheduleTutor(TimeSpan? from, TimeSpan? to, long classId, long personId);
+        IQueryable<FilterScheduleDto> FilterScheduleParent(TimeSpan? from, TimeSpan? to, long classId, long personId);
     }
 
 }

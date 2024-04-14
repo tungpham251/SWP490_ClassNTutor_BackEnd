@@ -29,7 +29,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "PARENT")]
         [HttpPut("update-student")]
-        public async Task<IActionResult> UpdateStudent([FromQuery] UpdateStudentDto entity)
+        public async Task<IActionResult> UpdateStudent([FromForm] UpdateStudentDto entity)
         {
             var result = await _studentService.UpdateStudent(entity).ConfigureAwait(false);
             if (result == false) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));

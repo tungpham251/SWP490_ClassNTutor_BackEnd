@@ -31,23 +31,33 @@ namespace API.Controllers
         }
 
         [HttpGet("get-filter-schedule")]
-        public async Task<IActionResult> GetFilterSchedule([FromQuery] string from, [FromQuery] string to)
+        public async Task<IActionResult> GetFilterSchedule([FromQuery] string? from, [FromQuery] string? to, [FromQuery] long classId, [FromQuery] long personId)
         {
             try
             {
-                TimeSpan fromTime;
-                TimeSpan toTime;
+                TimeSpan? fromTime = null;
+                TimeSpan? toTime = null;
 
-                if (!TimeSpan.TryParse(from, out fromTime))
+                if (!string.IsNullOrEmpty(from))
                 {
-                    return BadRequest("Invalid 'from' time format. The correct format is 'hh:mm:ss'.");
+                    TimeSpan parsedFromTime;
+                    if (!TimeSpan.TryParse(from, out parsedFromTime))
+                    {
+                        return BadRequest("Invalid 'from' time format. The correct format is 'hh:mm:ss'.");
+                    }
+                    fromTime = parsedFromTime;
                 }
 
-                if (!TimeSpan.TryParse(to, out toTime))
+                if (!string.IsNullOrEmpty(to))
                 {
-                    return BadRequest("Invalid 'to' time format. The correct format is 'hh:mm:ss'.");
+                    TimeSpan parsedToTime;
+                    if (!TimeSpan.TryParse(to, out parsedToTime))
+                    {
+                        return BadRequest("Invalid 'to' time format. The correct format is 'hh:mm:ss'.");
+                    }
+                    toTime = parsedToTime;
                 }
-                var result = await _scheduleService.FilterScheduleFromTo(fromTime, toTime).ConfigureAwait(false);
+                var result = await _scheduleService.FilterScheduleFromTo(fromTime, toTime, classId, personId).ConfigureAwait(false);
 
                 if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
                 return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));

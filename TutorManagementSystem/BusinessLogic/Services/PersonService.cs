@@ -129,12 +129,26 @@ namespace BusinessLogic.Services
                 {
                     currentUser.UserAvatar = avatar;
                 }
-
-                currentUser.Address = entity.Address!;
-                currentUser.Dob = entity.Dob;
-                currentUser.Gender = entity.Gender!;
-                currentUser.FullName = entity.FullName!;
-                currentUser.Phone = entity.Phone!;
+                if (entity.Address != null)
+                {
+                    currentUser.Address = entity.Address!;
+                }
+                if (entity.Dob != null)
+                {
+                    currentUser.Dob = entity.Dob!;
+                }
+                if (entity.Gender != null)
+                {
+                    currentUser.Gender = entity.Gender!;
+                }
+                if (entity.FullName != null)
+                {
+                    currentUser.FullName = entity.FullName!;
+                }
+                if (entity.Phone != null)
+                {
+                    currentUser.Phone = entity.Phone!;
+                }
 
                 _context.People.Update(currentUser);
 
