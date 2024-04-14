@@ -16,7 +16,7 @@ namespace API.Controllers
             _classService = classService;
         }
 
-        [Authorize(Roles = "STAFF")]
+        
         [HttpGet("get-classes")]
         public async Task<IActionResult> GetClasses([FromQuery] ClassRequestDto entity)
         {
