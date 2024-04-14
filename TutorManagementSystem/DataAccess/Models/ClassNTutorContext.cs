@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Models
@@ -43,7 +46,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Account__EC7D7D4D7C48EA75");
+                    .HasName("PK__Account__EC7D7D4D939FB007");
 
                 entity.ToTable("Account");
 
@@ -61,7 +64,7 @@ namespace DataAccess.Models
                     .HasColumnName("email");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(45)
+                    .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("password");
 
@@ -509,9 +512,13 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<SubjectTutor>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.SubjectId, e.TutorId, e.Level });
 
                 entity.ToTable("SubjectTutor");
+
+                entity.Property(e => e.SubjectId).HasColumnName("subjectId");
+
+                entity.Property(e => e.TutorId).HasColumnName("tutorId");
 
                 entity.Property(e => e.Level).HasColumnName("level");
 
@@ -520,18 +527,14 @@ namespace DataAccess.Models
                     .IsUnicode(false)
                     .HasColumnName("status");
 
-                entity.Property(e => e.SubjectId).HasColumnName("subjectId");
-
-                entity.Property(e => e.TutorId).HasColumnName("tutorId");
-
                 entity.HasOne(d => d.Subject)
-                    .WithMany()
+                    .WithMany(p => p.SubjectTutors)
                     .HasForeignKey(d => d.SubjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_subjecttutor_subject");
 
                 entity.HasOne(d => d.Tutor)
-                    .WithMany()
+                    .WithMany(p => p.SubjectTutors)
                     .HasForeignKey(d => d.TutorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_subjecttutor_tutor");
@@ -540,7 +543,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Tutor>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Tutor__EC7D7D4DB3AB4A7A");
+                    .HasName("PK__Tutor__EC7D7D4D9C3702D5");
 
                 entity.ToTable("Tutor");
 
@@ -595,7 +598,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Staff>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Staff__EC7D7D4DA004F383");
+                    .HasName("PK__Staff__EC7D7D4D01A87B00");
 
                 entity.ToTable("Staff");
 

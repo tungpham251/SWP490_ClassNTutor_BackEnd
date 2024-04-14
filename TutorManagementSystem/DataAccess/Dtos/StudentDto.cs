@@ -50,12 +50,10 @@ namespace DataAccess.Dtos
     }
 
     public class AddStudentDto
-    {
-        public long StudentId { get; set; }
+    {        
         public long ParentId { get; set; }
         public int StudentLevel { get; set; }
         public string? Status { get; set; }
-        public long PersonId { get; set; }
         public string FullName { get; set; } = null!;
         public IFormFile? Avatar { get; set; }
         public string Phone { get; set; } = null!;
