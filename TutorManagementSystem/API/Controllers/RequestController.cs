@@ -17,6 +17,13 @@ namespace API.Controllers
             _requestService = requestService;
         }
 
+        [HttpGet("get-requests")]
+        public async Task<IActionResult> GetRequests([FromQuery] RequestRequestDto entity)
+        {
+            var result = await _requestService.GetRequests(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
         [Authorize(Roles = "TUTOR")]
         [HttpGet("get-requests-for-tutor")]
         public async Task<IActionResult> GetRequestsForTutor([FromQuery] RequestRequestDto entity)

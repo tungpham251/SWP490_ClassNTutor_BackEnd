@@ -7,6 +7,11 @@ namespace DataAccess.Dtos
         public long ClassId { get; set; }
         public string? ClassName { get; set; }
         public string? TutorName { get; set; }
+        public long? TutorId { get; set; }
+        public string UserAvatar { get; set; } = null!;
+        public string EducationLevel { get; set; } = null!;
+        public string School { get; set; } = null!;
+        public string GraduationYear { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
         public long Price { get; set; }

@@ -27,4 +27,5 @@ namespace DataAccess.Dtos
         public PagingRequest PagingRequest { get; set; } = null!;
         public string? Status { get; set; }
     }
+
 }

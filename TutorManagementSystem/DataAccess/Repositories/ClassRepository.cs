@@ -45,11 +45,17 @@ namespace DataAccess.Repositories
             var query = from c in _context.Classes
                         join sj in _context.Subjects on c.SubjectId equals sj.SubjectId
                         join p in _context.People on c.TutorId equals p.PersonId
+                        join t in _context.Tutors on c.TutorId equals t.PersonId
                         select new ClassDto
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            UserAvatar = p.UserAvatar!,
                             ClassName = c.ClassName,
+                            TutorId = c.TutorId,
+                            School = t.School,
+                            EducationLevel = t.EducationLevel,
+                            GraduationYear = t.GraduationYear,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
                             Price = c.Price,
@@ -86,6 +92,7 @@ namespace DataAccess.Repositories
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            TutorId = c.TutorId,
                             ClassName = c.ClassName,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
@@ -124,6 +131,7 @@ namespace DataAccess.Repositories
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            TutorId = c.TutorId,
                             ClassName = c.ClassName,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
