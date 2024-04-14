@@ -11,19 +11,27 @@ namespace BusinessLogic.Services
     {
         private readonly ClassNTutorContext _context;
         private readonly IMapper _mapper;
+        private readonly IS3StorageService _s3storageService;
 
-        public StudentService(ClassNTutorContext context, IClassRepository classRepository, IMapper mapper)
+        public StudentService(ClassNTutorContext context, IClassRepository classRepository, IMapper mapper, IS3StorageService s3storageService)
         {
             _context = context;
             _mapper = mapper;
+            _s3storageService = s3storageService;
         }
 
         public async Task<bool> AddStudent(AddStudentDto entity)
         {
             try
             {
+                var avatar = "";
                 var newStudent = _mapper.Map<Student>(entity);
                 var newPerson = _mapper.Map<Person>(entity);
+                if (entity.Avatar != null)
+                {
+                    avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
+                    newPerson.UserAvatar = avatar;
+                }
                 await _context.People.AddAsync(newPerson).ConfigureAwait(false);
                 await _context.Students.AddAsync(newStudent).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -35,6 +43,7 @@ namespace BusinessLogic.Services
             }
 
         }
+    
 
         public async Task<bool> DeleteStudent(long id)
         {
@@ -64,17 +73,48 @@ namespace BusinessLogic.Services
                                                         .ConfigureAwait(false);
                 if (oldStudent == null || oldPerson == null || oldStudent.StudentId != oldPerson.PersonId)
                     return false;
-                oldStudent.ParentId = entity.ParentId;
-                oldStudent.StudentLevel = entity.StudentLevel;
-                oldStudent.Status = entity.Status;
-
-                oldPerson.PersonId = entity.PersonId;
-                oldPerson.FullName = entity.FullName;
-                oldPerson.UserAvatar = entity.UserAvatar;
-                oldPerson.Phone = entity.Phone;
-                oldPerson.Gender = entity.Gender;
-                oldPerson.Address = entity.Address;
-                oldPerson.Dob = entity.Dob;
+                var avatar = "";
+                if (entity.UserAvatar != null)
+                {
+                    avatar = await _s3storageService.UploadFileToS3(entity.UserAvatar!).ConfigureAwait(false);
+                    oldPerson.UserAvatar = avatar;
+                }
+                if (entity.ParentId != null)
+                {
+                    oldStudent.ParentId = entity.ParentId;
+                }
+                if (entity.StudentLevel != null)
+                {
+                    oldStudent.StudentLevel = entity.StudentLevel;
+                }
+                if (entity.Status != null)
+                {
+                    oldStudent.Status = entity.Status;
+                }
+                if (entity.PersonId != null)
+                {
+                    oldPerson.PersonId = entity.PersonId;
+                }
+                if (entity.FullName != null)
+                {
+                    oldPerson.FullName = entity.FullName;
+                }
+                if (entity.Phone != null)
+                {
+                    oldPerson.Phone = entity.Phone;
+                }
+                if (entity.Gender != null)
+                {
+                    oldPerson.Gender = entity.Gender;
+                }
+                if (entity.Address != null)
+                {
+                    oldPerson.Address = entity.Address;
+                }
+                if (entity.Dob != null)
+                {
+                    oldPerson.Dob = entity.Dob;
+                }
                 _context.Students.Update(oldStudent);
                 _context.People.Update(oldPerson);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
