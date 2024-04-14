@@ -93,6 +93,24 @@ namespace BusinessLogic.Services
             return result;
         }
 
+        public async Task<ViewPaging<RequestDto>> GetRequests(RequestRequestDto entity)
+        {
+            var search = _requestRepository.GetRequests(entity.Status!);
+
+            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<RequestDto>>(pagingList);
+
+
+            return new ViewPaging<RequestDto>(result, pagination);
+        }
+
         public async Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity)
         {
             var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId,entity.Status, entity.RequestType);
