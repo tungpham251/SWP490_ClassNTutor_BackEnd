@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace DataAccess.Dtos
         public string? Status { get; set; }
         public long PersonId { get; set; }
         public string FullName { get; set; } = null!;
-        public string? UserAvatar { get; set; }
+        public IFormFile? Avatar { get; set; }
         public string Phone { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public string Address { get; set; } = null!;
@@ -71,7 +72,7 @@ namespace DataAccess.Dtos
         public string? Status { get; set; }
         public long PersonId { get; set; }
         public string FullName { get; set; } = null!;
-        public string? UserAvatar { get; set; }
+        public IFormFile? UserAvatar { get; set; }
         public string Phone { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public string Address { get; set; } = null!;

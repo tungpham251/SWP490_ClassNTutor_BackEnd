@@ -13,6 +13,8 @@ namespace BusinessLogic.Services
         private readonly ClassNTutorContext _context;
         private readonly IMapper _mapper;
         private readonly IScheduleRepository _scheduleRepository;
+        private const int TUTOR = 1;
+        private const int PARENT = 2;
 
         public ScheduleService(ClassNTutorContext context, IMapper mapper, IScheduleRepository scheduleRepository)
         {
@@ -42,10 +44,24 @@ namespace BusinessLogic.Services
             return  result;
         }
 
-        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(TimeSpan from, TimeSpan to)
+        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(TimeSpan? from, TimeSpan? to, long classId, long personId)
         {
-            var data = await _scheduleRepository.FilterSchedule(from, to).ToListAsync().ConfigureAwait(false);
+            var currentUser = await _context.People
+                                                    .Include(p => p.Account)
+                                                    .ThenInclude(a => a.Role)
+                                                    .FirstOrDefaultAsync(p => p.PersonId.Equals(personId))
+                                                    .ConfigureAwait(false);
+            IEnumerable<FilterScheduleDto> data = null;
+            if (currentUser.Account.RoleId.Equals(TUTOR))
+            {
+                data = await _scheduleRepository.FilterScheduleTutor(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
+            }
+            if (currentUser.Account.RoleId.Equals(PARENT))
+            {
+                data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
+            }
             var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
+
             return orderedData;
         }
 
