@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         //[Authorize(Roles = "STAFF")]
-        [HttpGet("get-tutors-active-by-subject-name")]
+        [HttpGet("get-tutors")]
         public async Task<IActionResult> GetAllTutorActive([FromQuery] TutorRequestDto entity)
         {
             var result = await _tutorService.GetAllTutorActive(entity).ConfigureAwait(false);
