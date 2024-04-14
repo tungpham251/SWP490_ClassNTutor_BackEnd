@@ -22,6 +22,12 @@ namespace BusinessLogic.Services
         {
             try
             {
+                var subjectTutorExist = await _context.SubjectTutors.FirstOrDefaultAsync(s => s.SubjectId == entity.SubjectId
+                                                                && s.TutorId == entity.TutorId && s.Level == entity.Level).ConfigureAwait(false);
+                if (subjectTutorExist != null)
+                {
+                    return false;
+                }
                 var newSubjectTutor = _mapper.Map<SubjectTutor>(entity);
                 await _context.SubjectTutors.AddAsync(newSubjectTutor).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -33,11 +39,11 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<bool> DeleteSubjectTutor(long tutorId, long subjectId)
+        public async Task<bool> DeleteSubjectTutor(long tutorId, long subjectId, int level)
         {
             try
             {
-                var oldSubjectTutor = await _context.SubjectTutors.FirstOrDefaultAsync(s => s.TutorId == tutorId && s.SubjectId == subjectId)
+                var oldSubjectTutor = await _context.SubjectTutors.FirstOrDefaultAsync(s => s.TutorId == tutorId && s.SubjectId == subjectId && s.Level == level)
                                                        .ConfigureAwait(false);
                 if (oldSubjectTutor == null)
                     return false;

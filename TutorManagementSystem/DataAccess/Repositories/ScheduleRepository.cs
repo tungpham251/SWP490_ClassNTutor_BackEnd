@@ -39,7 +39,7 @@ namespace DataAccess.Repositories
             {
                 result = result.Where(x => x.SessionEnd <= to);
             }
-            if (!classId.Equals(null))
+            if (classId != 0)
             {
                 result = result.Where(x => x.ClassId == classId);
             }

@@ -20,13 +20,13 @@ namespace API.Controllers
 
         //[Authorize(Roles = "STAFF")]
         [HttpGet("get-tutors-active-by-subject-name")]
-        public async Task<IActionResult> GetAllTutorActive([FromQuery] string? subjectName)
+        public async Task<IActionResult> GetAllTutorActive([FromQuery] TutorRequestDto entity)
         {
-            var result =await _tutorService.GetAllTutorActive(subjectName).ConfigureAwait(false);
+            var result = await _tutorService.GetAllTutorActive(entity).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-       
+
     }
 }
