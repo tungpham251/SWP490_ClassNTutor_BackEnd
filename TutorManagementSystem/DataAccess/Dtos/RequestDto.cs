@@ -55,8 +55,6 @@ namespace DataAccess.Dtos
     {
         [Range(0, long.MaxValue)]
         public long PersonId { get; set; }
-        [Range(0, long.MaxValue)]
-        public long SubjectId { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
         public string? Status { get; set; }
