@@ -48,8 +48,6 @@ namespace BusinessLogic.Services
                     _context.Requests.Update(findRequest);
                     await _context.SaveChangesAsync().ConfigureAwait(false);
 
-
-
                     return _mapper.Map<UpdateRequestDto>(findRequest);
                 }
                 return null;
@@ -113,7 +111,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForParent(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForParent(entity.PersonId, entity.SubjectId,entity.Status, entity.RequestType);
+            var search = _requestRepository.SearchRequestsForParent(entity.PersonId,entity.Status, entity.RequestType);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
@@ -131,7 +129,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<RequestDto>> GetRequestsForTutor(RequestRequestDto entity)
         {
-            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.SubjectId, entity.Status, entity.RequestType);
+            var search = _requestRepository.SearchRequestsForTutor(entity.PersonId, entity.Status, entity.RequestType);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.RequestId)
