@@ -20,7 +20,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "PARENT")]
         [HttpPost("add-student")]
-        public async Task<IActionResult> AddStudent([FromBody] AddStudentDto entity)
+        public async Task<IActionResult> AddStudent([FromForm] AddStudentDto entity)
         {
             var result = await _studentService.AddStudent(entity).ConfigureAwait(false);
             if (result == false) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));

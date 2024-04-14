@@ -5,6 +5,6 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface ITutorService
     {
-        public Task<IEnumerable<GetTutorDto>> GetAllTutorActive(string subjectName);
+        public Task<ViewPaging<GetTutorDto>> GetAllTutorActive(TutorRequestDto entity);
     }
 }

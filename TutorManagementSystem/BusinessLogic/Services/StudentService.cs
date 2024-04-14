@@ -27,6 +27,10 @@ namespace BusinessLogic.Services
                 var avatar = "";
                 var newStudent = _mapper.Map<Student>(entity);
                 var newPerson = _mapper.Map<Person>(entity);
+                var lastPerson = await _context.People.OrderBy(x => x.PersonId).LastOrDefaultAsync().ConfigureAwait(false);
+                var lastStudent = await _context.Students.OrderBy(x => x.StudentId).LastOrDefaultAsync().ConfigureAwait(false);
+                newStudent.StudentId = lastStudent.StudentId + 1;
+                newPerson.PersonId = lastPerson.PersonId + 1;
                 if (entity.Avatar != null)
                 {
                     avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
@@ -43,7 +47,7 @@ namespace BusinessLogic.Services
             }
 
         }
-    
+
 
         public async Task<bool> DeleteStudent(long id)
         {

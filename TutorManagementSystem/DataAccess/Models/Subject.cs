@@ -9,6 +9,7 @@ namespace DataAccess.Models
         {
             Classes = new HashSet<Class>();
             Requests = new HashSet<Request>();
+            SubjectTutors = new HashSet<SubjectTutor>();
         }
 
         public long SubjectId { get; set; }
@@ -17,5 +18,6 @@ namespace DataAccess.Models
 
         public virtual ICollection<Class> Classes { get; set; }
         public virtual ICollection<Request> Requests { get; set; }
+        public virtual ICollection<SubjectTutor> SubjectTutors { get; set; }
     }
 }
