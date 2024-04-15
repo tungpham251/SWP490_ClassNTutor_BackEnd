@@ -12,7 +12,7 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public IQueryable<Role> SearchRole(string searchWord, string status)
+        public IQueryable<Role> SearchRoles(string searchWord, string status)
         {
             var result = _context.Roles.AsQueryable();
 
@@ -20,7 +20,7 @@ namespace DataAccess.Repositories
                 result = result.Where(x => x.RoleName.ToLower()
                 .Contains(searchWord.ToLower()));
 
-            if (status != null)
+            if (!string.IsNullOrWhiteSpace(status))
             {
                 result = result.Where(c => c.Status.Equals(status));
             }

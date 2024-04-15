@@ -15,7 +15,7 @@ namespace DataAccess.Models
         public long StudentId { get; set; }
         public long ParentId { get; set; }
         public int StudentLevel { get; set; }
-        public string? Status { get; set; }
+        public string Status { get; set; } = null!;
 
         public virtual Person Parent { get; set; } = null!;
         public virtual Person StudentNavigation { get; set; } = null!;

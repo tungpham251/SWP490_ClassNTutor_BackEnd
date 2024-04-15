@@ -17,7 +17,6 @@ namespace API.Controllers
             _requestService = requestService;
         }
 
-        [Authorize(Roles = "STAFF")]
         [HttpGet("get-requests")]
         public async Task<IActionResult> GetRequests([FromQuery] RequestRequestDto entity)
         {
@@ -25,7 +24,23 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "TUTOR")]
+        [HttpGet("get-requests-for-tutor")]
+        public async Task<IActionResult> GetRequestsForTutor([FromQuery] RequestRequestDto entity)
+        {
+            var result = await _requestService.GetRequestsForTutor(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "PARENT")]
+        [HttpGet("get-requests-for-parent")]
+        public async Task<IActionResult> GetRequestsForParent([FromQuery] RequestRequestDto entity)
+        {
+            var result = await _requestService.GetRequestsForParent(entity).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR,PARENT")]
         [HttpGet("get-request-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] long id)
         {
@@ -35,7 +50,7 @@ namespace API.Controllers
         }
 
 
-        [Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "TUTOR,PARENT")]
         [HttpPost("add-request")]
         public async Task<IActionResult> AddRequest([FromForm] AddRequestDto entity)
         {
@@ -44,11 +59,41 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        [Authorize(Roles = "TUTOR")]
-        [HttpGet("get-requests-of-tutor")]
-        public async Task<IActionResult> GetRequestsOfTutor([FromQuery] RequestOfTutorRequestDto entity)
+
+        [Authorize(Roles = "TUTOR,PARENT")]
+        [HttpPut("update-request")]
+        public async Task<IActionResult> UpdateRequest([FromForm] UpdateRequestDto entity)
         {
-            var result = await _requestService.GetRequestsOfTutor(entity).ConfigureAwait(false);
+            var result = await _requestService.UpdateRequest(entity).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR,PARENT")]
+        [HttpPut("accept-request")]
+        public async Task<IActionResult> AcceptRequest(long requestId)
+        {
+            var result = await _requestService.AcceptRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+
+        [Authorize(Roles = "PARENT")]
+        [HttpPut("cancel-request")]
+        public async Task<IActionResult> CancelRequest(long requestId)
+        {
+            var result = await _requestService.CancelRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [Authorize(Roles = "TUTOR")]
+        [HttpPut("decline-request")]
+        public async Task<IActionResult> DeclineRequest(long requestId)
+        {
+            var result = await _requestService.DeclineRequest(requestId).ConfigureAwait(false);
+            if (result == null) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
     }

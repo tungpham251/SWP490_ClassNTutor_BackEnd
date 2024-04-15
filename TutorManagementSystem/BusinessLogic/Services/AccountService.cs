@@ -120,36 +120,7 @@ namespace BusinessLogic.Services
             {
                 return false;
             }
-        }
-
-        public async Task<IEnumerable<PersonDto>> GetAllParents()
-        {
-            var list = await _context.People.Include(x => x.Account)
-                .Where(x => x.Account!.RoleId == 2
-                && x.Account.Status.Trim().ToLower()
-                .Equals("Active".Trim().ToLower()))
-                .ToListAsync().ConfigureAwait(false);
-            return _mapper.Map<IEnumerable<PersonDto>>(list);
-        }
-
-        public async Task<IEnumerable<PersonDto>> GetAllStudents()
-        {
-            var list = await _context.People.Include(x => x.StudentStudentNavigation)
-               .Where(x => x.StudentStudentNavigation!.Status!.Trim().ToLower()
-               .Equals("Created".Trim().ToLower()))
-               .ToListAsync().ConfigureAwait(false);
-            return _mapper.Map<IEnumerable<PersonDto>>(list);
-        }
-
-        public async Task<IEnumerable<PersonDto>> GetAllTutors()
-        {
-            var list = await _context.People.Include(x => x.Account)
-                .Where(x => x.Account!.RoleId == 1
-                && x.Account.Status.Trim().ToLower()
-                .Equals("Active".Trim().ToLower()))
-                .ToListAsync().ConfigureAwait(false);
-            return _mapper.Map<IEnumerable<PersonDto>>(list);
-        }
+        }     
 
         public async Task<string> GetAccountId(string token)
         {
@@ -173,19 +144,20 @@ namespace BusinessLogic.Services
             }
             catch (Exception)
             {
-                return null;
+                return String.Empty;
             }
         }
 
-        public async Task<string> Login(LoginDto entity)
+        public async Task<LoginResponseDto> Login(LoginDto entity)
         {
             try
             {
                 var account = await _context.Accounts.Include(x => x.Role).Where(x => x.Email.Trim().ToLower()
                 .Equals(entity.Email!.Trim().ToLower())).FirstOrDefaultAsync();
 
-                if (account == null ||
-                    !PasswordHashUtility.VerifyPassword(entity.Password!, account.Password)) return null;
+                var check = PasswordHashUtility.VerifyPassword(entity.Password!, account!.Password);
+
+                if (account == null || !check) return null;
 
                 if (!account.Status.ToLower().Equals("Active".ToLower())) return null;
 
@@ -202,10 +174,13 @@ namespace BusinessLogic.Services
                 var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                     _config["Jwt:Audience"],
                     claims,
-                    expires: DateTime.Now.AddMinutes(15),
+                    expires: DateTime.Now.AddMonths(1),
                     signingCredentials: credentials);
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                var tokenHandle = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName);
+
             }
             catch (Exception)
             {
@@ -261,9 +236,9 @@ namespace BusinessLogic.Services
 
                 if (newAccount == null) return false;
 
-                if (!FileHelper.IsPDF(entity.Cv.FileName)
-                    || !FileHelper.IsImage(entity.BackCmnd.FileName)
-                     || !FileHelper.IsImage(entity.FrontCmnd.FileName)
+                if (!FileHelper.IsPDF(entity.Cv!.FileName)
+                    || !FileHelper.IsImage(entity.BackCmnd!.FileName)
+                     || !FileHelper.IsImage(entity.FrontCmnd!.FileName)
                     )
                 {
                     return false;
@@ -276,7 +251,7 @@ namespace BusinessLogic.Services
                 var newTutor = new Tutor
                 {
                     PersonId = newAccount.PersonId,
-                    Cmnd = entity.Cmnd,
+                    Cmnd = entity.Cmnd!,
                     BackCmnd = back,
                     FrontCmnd = front,
                     Cv = cv,
@@ -313,7 +288,12 @@ namespace BusinessLogic.Services
                 _context.Accounts.Update(account);
                 await _context.SaveChangesAsync();
 
-                await _emailService.SendEmail(account.Email, "Reset Password !!!", $"Your new password is: {newPassword}");
+                var check = await _emailService.SendEmail(email, "Reset Password !!!", $"Your new password is: {newPassword}");
+
+                if (!check)
+                {
+                    return false;
+                }
 
                 return true;
             }

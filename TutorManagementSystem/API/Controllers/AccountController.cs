@@ -35,7 +35,7 @@ namespace API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto entity)
         {
             var token = await _accountService.Login(entity).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(token)) return Unauthorized(new ApiFormatResponse(StatusCodes.Status401Unauthorized, false, token));
+            if (token == null) return Unauthorized(new ApiFormatResponse(StatusCodes.Status401Unauthorized, false, token));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, token));
         }
 
@@ -85,26 +85,6 @@ namespace API.Controllers
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
-
-        [HttpGet("get-all-tutors")]
-        public async Task<IActionResult> GetAllTutors()
-        {
-            var result = await _accountService.GetAllTutors().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [HttpGet("get-all-parents")]
-        public async Task<IActionResult> GetAllParents()
-        {
-            var result = await _accountService.GetAllParents().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
-
-        [HttpGet("get-all-students")]
-        public async Task<IActionResult> GetAllStudents()
-        {
-            var result = await _accountService.GetAllStudents().ConfigureAwait(false);
-            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
+      
     }
 }

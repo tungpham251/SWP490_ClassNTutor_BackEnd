@@ -4,6 +4,6 @@ namespace DataAccess.Repositories.Interfaces
 {
     public interface IRoleRepository
     {
-        IQueryable<Role> SearchRole(string searchWord, string status);
+        IQueryable<Role> SearchRoles(string searchWord, string status);
     }
 }

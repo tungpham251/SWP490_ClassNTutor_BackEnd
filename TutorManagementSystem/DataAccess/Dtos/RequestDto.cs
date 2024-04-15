@@ -11,7 +11,8 @@ namespace DataAccess.Dtos
     {
         public long RequestId { get; set; }
         public string? ParentName { get; set; }
-        public long? StudentId { get; set; }
+        public string? StudentName { get; set; }
+        public string? TutorName { get; set; }
         public string? RequestType { get; set; } 
         public string? ClassName { get; set; }
         public int? Level { get; set; }
@@ -36,18 +37,29 @@ namespace DataAccess.Dtos
         public string? Status { get; set; } 
     }
 
-    public class RequestRequestDto
+    public class UpdateRequestDto
     {
-        public int SubjectId { get; set; }
-        [Required]
-        public PagingRequest PagingRequest { get; set; } = null!;
+        public long RequestId { get; set; }
+        public long ParentId { get; set; }
+        public long TutorId { get; set; }
+        public long StudentId { get; set; }
+        public string? RequestType { get; set; }
+        public long? ClassId { get; set; }
+        public int? Level { get; set; }
+        public long SubjectId { get; set; }
+        public long? Price { get; set; }
+        public string? Status { get; set; }
     }
 
-    public class RequestOfTutorRequestDto
+    public class RequestRequestDto
     {
-        public int TutorId { get; set; }
-        public int SubjectId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long PersonId { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
+        public string? Status { get; set; }
+        public string? RequestType { get; set; }
     }
+
+    
 }
