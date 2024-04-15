@@ -38,7 +38,7 @@ namespace DataAccess.Repositories
             if ((entity.CreatedFrom != DateTime.MinValue && entity.CreatedFrom != null)
                 && (entity.CreatedTo != DateTime.MinValue && entity.CreatedTo != null))
             {
-                result = result.Where(p => p.CreatedAt >= entity.CreatedFrom && p.CreatedAt <= entity.CreatedTo);
+                result = result.Where(p => p.RequestDate >= entity.CreatedFrom && p.RequestDate <= entity.CreatedTo);
             }
 
             return result;
