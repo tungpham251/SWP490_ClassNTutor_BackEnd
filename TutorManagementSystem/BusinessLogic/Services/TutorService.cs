@@ -30,14 +30,21 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<GetTutorDto>> GetAllTutorActive(TutorRequestDto entity)
         {
-            var search = _tutorRepository.SearchTutors(entity.subjectName!);
+            var search = _tutorRepository.SearchTutors(entity.subjectName!).ToList();
 
-            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+            var groupSearched = new List<GetTutorDto>();
+
+            foreach (var s in search)
+            {
+                var check = groupSearched.Where(x => x.PersonId == s.PersonId).FirstOrDefault();
+                if (check == null) groupSearched.Add(s);
+            }
+
+            var pagingList = groupSearched.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.PersonId)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToList();
 
-            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+            var pagination = new Pagination(groupSearched.Count(), entity.PagingRequest.CurrentPage,
                 entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
 
             var result = _mapper.Map<IEnumerable<GetTutorDto>>(pagingList);
