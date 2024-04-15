@@ -295,8 +295,13 @@ namespace BusinessLogic.Services
                 //update schedule
                 if (entity.UpdateScheduleDto != null)
                 {
-                    var addSchedules = entity.UpdateScheduleDto.Where(s => s.Id.Equals(-1L));
-                    var updateSchedule = entity.UpdateScheduleDto.Where(s => !s.Id.Equals(-1L));
+                    // remove old schedule
+                    var oldSchedules = await _context.Schedules.Where(x => x.ClassId == entity.ClassId).ToListAsync().ConfigureAwait(false);
+                    if (oldSchedules.Any())
+                    {
+                        _context.Schedules.RemoveRange(oldSchedules);
+                    }
+                    var addSchedules = entity.UpdateScheduleDto.ToList();
                     //add new schedule
                     if (addSchedules.Any())
                     {
@@ -306,22 +311,6 @@ namespace BusinessLogic.Services
                         newSchedules.ToList().ForEach(s => { s.ClassId = result.ClassId; s.Id = newScheduleId++; });
                         await _context.Schedules.AddRangeAsync(newSchedules).ConfigureAwait(false);
                     }
-                    //update old schedule
-                    if (updateSchedule.Any())
-                    {
-                        var updateSchedules = new List<Schedule>();
-                        foreach (var schedule in updateSchedule)
-                        {
-                            var oldSchedule = await _context.Schedules.FirstOrDefaultAsync(s => s.Id.Equals(schedule.Id)).ConfigureAwait(false);
-                            oldSchedule.DayOfWeek = schedule.DayOfWeek;
-                            oldSchedule.SessionStart = schedule.SessionStart;
-                            oldSchedule.SessionEnd = schedule.SessionEnd;
-                            oldSchedule.Status = schedule.Status;
-                            updateSchedules.Add(oldSchedule);
-                        }
-                        _context.Schedules.UpdateRange(updateSchedules);
-                    }
-
                 }
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -331,5 +320,6 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+
     }
 }
