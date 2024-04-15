@@ -75,32 +75,36 @@ namespace DataAccess.Repositories
             return query.OrderBy(x => x.RequestId);
         }
 
-        public IQueryable<RequestDto> SearchRequestsForParent(long parentId, string status,string requestType)
+        public IQueryable<RequestDto> SearchRequestsForParent(long parentId, string status, string requestType)
         {
             var query = from r in _context.Requests
-                        join sj in _context.Subjects on r.SubjectId equals sj.SubjectId
-                        join p in _context.People on r.ParentId equals p.PersonId
-                        join c in _context.Classes on r.ClassId equals c.ClassId
-                        join s in _context.People on r.StudentId equals s.PersonId
-                        join t in _context.People on r.TutorId equals t.PersonId
+                        join sj in _context.Subjects on r.SubjectId equals sj.SubjectId into sjJoin
+                        from sj in sjJoin.DefaultIfEmpty()
+                        join p in _context.People on r.ParentId equals p.PersonId into pJoin
+                        from p in pJoin.DefaultIfEmpty()
+                        join c in _context.Classes on r.ClassId equals c.ClassId into cJoin
+                        from c in cJoin.DefaultIfEmpty()
+                        join s in _context.People on r.StudentId equals s.PersonId into sJoin
+                        from s in sJoin.DefaultIfEmpty()
+                        join t in _context.People on r.TutorId equals t.PersonId into tJoin
+                        from t in tJoin.DefaultIfEmpty()
                         where r.ParentId == parentId
                         select new RequestDto
                         {
                             RequestId = r.RequestId,
-                            StudentName = s.FullName,
-                            TutorName = t.FullName,
-                            ParentName = p.FullName,
+                            StudentName = s != null ? s.FullName : "",
+                            TutorName = t != null ? t.FullName : "",
+                            ParentName = p != null ? p.FullName : "",
                             RequestType = r.RequestType,
-                            ClassName = c.ClassName,
+                            ClassName = c != null ? c.ClassName : "",
                             Level = r.Level,
-                            SubjectName = sj.SubjectName,
-                            SubjectId = sj.SubjectId,
+                            SubjectName = sj != null ? sj.SubjectName : "",
+                            SubjectId = sj != null ? sj.SubjectId : 0,
                             Price = r.Price,
                             CreatedAt = r.CreatedAt,
                             UpdatedAt = r.UpdatedAt,
                             Status = r.Status
                         };
-
 
             if (!string.IsNullOrWhiteSpace(status))
             {
@@ -113,6 +117,7 @@ namespace DataAccess.Repositories
 
             return query.OrderBy(x => x.RequestId);
         }
+
 
         public IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, string status, string requestType)
         {
