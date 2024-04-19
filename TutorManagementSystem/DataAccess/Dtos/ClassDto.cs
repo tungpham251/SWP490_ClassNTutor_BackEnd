@@ -14,6 +14,7 @@ namespace DataAccess.Dtos
         public string GraduationYear { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
+        public int NumOfSession { get; set; }
         public long Price { get; set; }
         public string? SubjectName { get; set; }
         public DateTime StartDate { get; set; }
@@ -32,6 +33,7 @@ namespace DataAccess.Dtos
         public string? ClassName { get; set; }
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
+        public int NumOfSession {  get; set; }
         public long Price { get; set; }
         [Range(0, long.MaxValue)]
         public long SubjectId { get; set; }
@@ -135,6 +137,7 @@ namespace DataAccess.Dtos
         public DateTime? EndDate { get; set; }
         public int MaxCapacity { get; set; }
         public string? Status { get; set; }
+        public int? NumOfSession { get; set; }
         public IEnumerable<AddScheduleDto>? AddScheduleDto { get; set; }
     }
 
