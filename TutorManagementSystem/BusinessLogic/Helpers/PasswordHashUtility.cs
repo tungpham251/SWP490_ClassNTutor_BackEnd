@@ -2,7 +2,7 @@
 {
     public static class PasswordHashUtility
     {
-        private const int WorkFactor = 12; 
+        private const int WorkFactor = 12;
 
         public static string HashPassword(string password)
         {
@@ -14,8 +14,8 @@
         {
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }
-    }
 
+    }
 
     public class PasswordGenerator
     {

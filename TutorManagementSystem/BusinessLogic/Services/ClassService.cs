@@ -27,7 +27,7 @@ namespace BusinessLogic.Services
                 var lastClassId = await _context.Classes.OrderBy(x => x.ClassId).LastOrDefaultAsync().ConfigureAwait(false);
 
                 var newClass = _mapper.Map<Class>(entity);
-                newClass.ClassId = lastClassId.ClassId+1;
+                newClass.ClassId = lastClassId.ClassId + 1;
                 newClass.CreatedAt = newClass.UpdatedAt = DateTime.Now;
 
                 await _context.Classes.AddAsync(newClass).ConfigureAwait(false);
@@ -134,6 +134,14 @@ namespace BusinessLogic.Services
             try
             {
 
+                var listSchedule = _context.Classes.Include(c => c.Schedules)
+                                                   .FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
+                if (listSchedule.Any())
+                {
+                    listSchedule.ToList().ForEach(s => s.Status = "SUSPEND");
+                    _context.Schedules.UpdateRange(listSchedule);
+                }
+
                 _classRepository.DeleteClassById(classId);
 
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -155,6 +163,12 @@ namespace BusinessLogic.Services
             var result = _mapper.Map<ClassDetailsIncludeStudentInfoDto>(classDetails);
             if (classDetails.ClassMembers != null)
                 result.StudentInformationDto = _mapper.Map<IEnumerable<StudentInformationDto>>(classDetails.ClassMembers);
+
+            if (classDetails.Schedules.Any())
+            {
+                result.Schedules = _mapper.Map<IEnumerable<ScheduleDto>>(classDetails.Schedules);
+            }
+
             return result;
         }
 
@@ -182,11 +196,24 @@ namespace BusinessLogic.Services
             {
                 foreach (var item in entity)
                 {
-                    var findLast = await _context.ClassMembers.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
-                    var classMember = _mapper.Map<ClassMember>(item);
-                    classMember.Id = findLast!.Id + 1;
-                    classMember.Status = "CREATED";
-                    await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    var classMemberExist = await _context.ClassMembers.Where(x => x.ClassId == item.ClassId
+                         && x.StudentId == item.StudentId)
+                        .FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (classMemberExist != null && classMemberExist.Status.Equals("DELETED"))
+                    {
+                        classMemberExist.Status = "CREATED";
+                        _context.ClassMembers.Update(classMemberExist);
+                    }
+
+                    if (classMemberExist == null)
+                    {
+                        var findLast = await _context.ClassMembers.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                        var classMember = _mapper.Map<ClassMember>(item);
+                        classMember.Id = findLast!.Id + 1;
+                        classMember.Status = "CREATED";
+                        await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
+                    }
+
                     await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
                 return true;
@@ -196,5 +223,103 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+
+        public async Task<bool> DeleteStudentInClass(DeleteStudentInClassRequestDto entity)
+        {
+            try
+            {
+                var classMember = await _context.ClassMembers.Where(x => x.ClassId == entity.ClassId
+                && x.StudentId == entity.StudentId)
+                    .FirstOrDefaultAsync().ConfigureAwait(false);
+                if (classMember == null) return false;
+
+                classMember.Status = "DELETED";
+                _context.ClassMembers.Update(classMember);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> AddClassIncludeSchedule(AddClassIncludeScheduleDto entity)
+        {
+            try
+            {
+                var lastClassId = await _context.Classes.OrderBy(x => x.ClassId).LastOrDefaultAsync().ConfigureAwait(false);
+                var newClass = _mapper.Map<Class>(entity);
+                newClass.ClassId = lastClassId.ClassId + 1;
+                newClass.CreatedAt = newClass.UpdatedAt = DateTime.Now;
+                await _context.Classes.AddAsync(newClass).ConfigureAwait(false);
+
+                //add add schedule
+                if (entity.AddScheduleDto != null)
+                {
+                    var lastSchedule = await _context.Schedules.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                    var newScheduleId = lastSchedule.Id + 1;
+                    var newSchedules = _mapper.Map<IEnumerable<Schedule>>(entity.AddScheduleDto);
+                    newSchedules.ToList().ForEach(s => { s.ClassId = newClass.ClassId; s.Id = newScheduleId++; });
+                    await _context.Schedules.AddRangeAsync(newSchedules).ConfigureAwait(false);
+                }
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateClassIncludeSchedule(UpdateClassIncludeScheduleDto entity)
+        {
+            try
+            {
+                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId)).ConfigureAwait(false);
+                if (result == null)
+                    return false;
+
+                result.TutorId = entity.TutorId;
+                result.ClassName = entity.ClassName;
+                result.ClassDesc = entity.ClassDesc;
+                result.ClassLevel = entity.ClassLevel;
+                result.Price = entity.Price;
+                result.SubjectId = entity.SubjectId;
+                result.StartDate = entity.StartDate;
+                result.EndDate = entity.EndDate;
+                result.MaxCapacity = entity.MaxCapacity;
+
+                _classRepository.UpdateClass(result);
+                //update schedule
+                if (entity.UpdateScheduleDto != null)
+                {
+                    // remove old schedule
+                    var oldSchedules = await _context.Schedules.Where(x => x.ClassId == entity.ClassId).ToListAsync().ConfigureAwait(false);
+                    if (oldSchedules.Any())
+                    {
+                        _context.Schedules.RemoveRange(oldSchedules);
+                    }
+                    var addSchedules = entity.UpdateScheduleDto.ToList();
+                    //add new schedule
+                    if (addSchedules.Any())
+                    {
+                        var lastSchedule = await _context.Schedules.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                        var newScheduleId = lastSchedule.Id + 1;
+                        var newSchedules = _mapper.Map<IEnumerable<Schedule>>(addSchedules);
+                        newSchedules.ToList().ForEach(s => { s.ClassId = result.ClassId; s.Id = newScheduleId++; });
+                        await _context.Schedules.AddRangeAsync(newSchedules).ConfigureAwait(false);
+                    }
+                }
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

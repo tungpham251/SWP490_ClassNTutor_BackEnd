@@ -2,7 +2,6 @@
 using DataAccess.Models;
 using DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Net.NetworkInformation;
 
 namespace DataAccess.Repositories
 {
@@ -46,11 +45,17 @@ namespace DataAccess.Repositories
             var query = from c in _context.Classes
                         join sj in _context.Subjects on c.SubjectId equals sj.SubjectId
                         join p in _context.People on c.TutorId equals p.PersonId
+                        join t in _context.Tutors on c.TutorId equals t.PersonId
                         select new ClassDto
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            UserAvatar = p.UserAvatar!,
                             ClassName = c.ClassName,
+                            TutorId = c.TutorId,
+                            School = t.School,
+                            EducationLevel = t.EducationLevel,
+                            GraduationYear = t.GraduationYear,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
                             Price = c.Price,
@@ -87,6 +92,7 @@ namespace DataAccess.Repositories
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            TutorId = c.TutorId,
                             ClassName = c.ClassName,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
@@ -125,6 +131,7 @@ namespace DataAccess.Repositories
                         {
                             ClassId = c.ClassId,
                             TutorName = p.FullName,
+                            TutorId = c.TutorId,
                             ClassName = c.ClassName,
                             ClassDesc = c.ClassDesc,
                             ClassLevel = c.ClassLevel,
@@ -165,8 +172,13 @@ namespace DataAccess.Repositories
 
         public async Task<Class> GetClassByIdIncludeStudentInformation(long id)
         {
-            var result = await _context.Classes.Include(c => c.ClassMembers)
+            var result = await _context.Classes
+                             .Include(c => c.Tutor).ThenInclude(c=>c.Person)
+                             .Include(c => c.Subject)
+                             .Include(c => c.Schedules)
+                             .Include(c => c.ClassMembers)
                              .ThenInclude(c => c.Student)
+                             .ThenInclude(c => c.Parent).Include(c => c.ClassMembers).ThenInclude(c => c.Student)
                              .ThenInclude(c => c.StudentNavigation)
                  .FirstOrDefaultAsync(c => c.ClassId.Equals(id) && c.Status.Equals("ACTIVE")).ConfigureAwait(false);
             return result;

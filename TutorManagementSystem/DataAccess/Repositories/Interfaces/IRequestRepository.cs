@@ -4,9 +4,11 @@ namespace DataAccess.Repositories.Interfaces
 {
     public interface IRequestRepository
     {
-        IQueryable<RequestDto> SearchRequestsForParent(long parentId, long subjectId);
+        IQueryable<RequestDto> GetRequests(string status);
 
-        IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, long subjectId);
+        IQueryable<RequestDto> SearchRequestsForParent(long parentId, string status, string requestType);
+
+        IQueryable<RequestDto> SearchRequestsForTutor(long tutorId, string status, string requestType);
 
         IQueryable<RequestDto> GetRequestDetail(long id);
     }

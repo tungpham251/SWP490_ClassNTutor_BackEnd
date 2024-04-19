@@ -85,6 +85,6 @@ namespace API.Controllers
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
-
+      
     }
 }

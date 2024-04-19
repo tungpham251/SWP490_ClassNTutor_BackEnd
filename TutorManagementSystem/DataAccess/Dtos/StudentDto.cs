@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,9 +32,48 @@ namespace DataAccess.Dtos
 
     public class AddStudentInClassRequestDto
     {
+        [Range(0, long.MaxValue)]
         public long Id { get; set; }
+        [Range(0, long.MaxValue)]
         public long ClassId { get; set; }
+        [Range(0, long.MaxValue)]
         public long StudentId { get; set; }
         public string Status { get; set; } = null!;
+    }
+
+    public class DeleteStudentInClassRequestDto
+    {
+        [Range(0, long.MaxValue)]
+        public long ClassId { get; set; }
+        [Range(0, long.MaxValue)]
+        public long StudentId { get; set; }
+    }
+
+    public class AddStudentDto
+    {        
+        public long ParentId { get; set; }
+        public int StudentLevel { get; set; }
+        public string? Status { get; set; }
+        public string FullName { get; set; } = null!;
+        public IFormFile? Avatar { get; set; }
+        public string Phone { get; set; } = null!;
+        public string Gender { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public DateTime? Dob { get; set; }
+    }
+
+    public class UpdateStudentDto
+    {
+        public long StudentId { get; set; }
+        public long ParentId { get; set; }
+        public int StudentLevel { get; set; }
+        public string? Status { get; set; }
+        public long PersonId { get; set; }
+        public string FullName { get; set; } = null!;
+        public IFormFile? UserAvatar { get; set; }
+        public string Phone { get; set; } = null!;
+        public string Gender { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public DateTime? Dob { get; set; }
     }
 }

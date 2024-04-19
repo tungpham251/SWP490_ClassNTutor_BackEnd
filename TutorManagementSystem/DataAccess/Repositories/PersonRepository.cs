@@ -18,7 +18,7 @@ namespace DataAccess.Repositories
             var query = from p in _context.People
                         join a in _context.Accounts on p.PersonId equals a.PersonId
                         join r in _context.Roles on a.RoleId equals r.RoleId
-                        where r.RoleId != 0
+                        where r.RoleId != 0 && r.RoleId != 3
                         select new PersonDto
                         {
                             PersonId = p.PersonId,

@@ -17,7 +17,8 @@ namespace DataAccess.Repositories
         public IQueryable<Payment> SearchAndFilterPayment(SearchFilterPaymentDto entity)
         {
 
-            IQueryable<Payment> result = _context.Payments;
+            IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                          .Include(p => p.Request).ThenInclude(r => r.Person);
 
             if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
             {
@@ -37,14 +38,16 @@ namespace DataAccess.Repositories
             if ((entity.CreatedFrom != DateTime.MinValue && entity.CreatedFrom != null)
                 && (entity.CreatedTo != DateTime.MinValue && entity.CreatedTo != null))
             {
-                result = result.Where(p => p.CreatedAt >= entity.CreatedFrom && p.CreatedAt <= entity.CreatedTo);
+                result = result.Where(p => p.RequestDate >= entity.CreatedFrom && p.RequestDate <= entity.CreatedTo);
             }
 
             return result;
         }
         public async Task<Payment> GetPaymentById(long paymentId)
         {
-            var result = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
+            var result = await _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                .Include(p => p.Request).ThenInclude(r => r.Person)
+                                                .FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
             return result;
         }
 
@@ -61,12 +64,12 @@ namespace DataAccess.Repositories
             return false;
         }
 
-        public async Task<bool> UpdateDescriptionPayment(long paymentId, string paymentDescription)
+        public async Task<bool> UpdateDescriptionPayment(long paymentId, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
             if (payment != null)
             {
-                payment.PaymentDesc = paymentDescription;
+                payment.Status = status;
                 _context.Payments.Update(payment);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;

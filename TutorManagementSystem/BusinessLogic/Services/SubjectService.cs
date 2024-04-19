@@ -69,6 +69,7 @@ namespace BusinessLogic.Services
             }
         }
 
+
         public async Task<SubjectDto> GetById(int id)
         {
             var subject = await _context.Subjects

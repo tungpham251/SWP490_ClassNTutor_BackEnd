@@ -6,4 +6,5 @@ namespace DataAccess.Repositories.Interfaces
     {
         IQueryable<Subject> SearchSubjects(string searchWord, string status);
     }
+
 }

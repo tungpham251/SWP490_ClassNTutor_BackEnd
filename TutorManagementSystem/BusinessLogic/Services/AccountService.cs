@@ -120,7 +120,7 @@ namespace BusinessLogic.Services
             {
                 return false;
             }
-        }
+        }     
 
         public async Task<string> GetAccountId(string token)
         {
@@ -179,7 +179,8 @@ namespace BusinessLogic.Services
 
                 var tokenHandle = new JwtSecurityTokenHandler().WriteToken(token);
 
-                return new LoginResponseDto(tokenHandle, account.PersonId,account.Role.RoleName);
+                return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName);
+
             }
             catch (Exception)
             {
@@ -235,7 +236,7 @@ namespace BusinessLogic.Services
 
                 if (newAccount == null) return false;
 
-                if (!FileHelper.IsPDF(entity.Cv.FileName!)
+                if (!FileHelper.IsPDF(entity.Cv!.FileName)
                     || !FileHelper.IsImage(entity.BackCmnd!.FileName)
                      || !FileHelper.IsImage(entity.FrontCmnd!.FileName)
                     )
