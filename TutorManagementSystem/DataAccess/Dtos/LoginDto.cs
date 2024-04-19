@@ -18,12 +18,16 @@ namespace DataAccess.Dtos
         public long? UserId { get; set; }
 
         public string? RoleName { get; set; }
+        public string? FullName { get; set; }
+        public string? UserAvatar { get; set; }
 
-        public LoginResponseDto(string? token, long? userId, string? roleName)
+        public LoginResponseDto(string? token, long? userId, string? roleName, string? fullName, string? avatar)
         {
             Token = token;
             UserId = userId;
             RoleName = roleName;
+            FullName = fullName;
+            UserAvatar = avatar;
         }
     }
 }
