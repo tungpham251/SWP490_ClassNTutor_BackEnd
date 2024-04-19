@@ -18,7 +18,7 @@ namespace API.Controllers
             _personService = personService;
         }
 
-        [Authorize(Roles = "STAFF")]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("get-staffs")]
         public async Task<IActionResult> GetStaffs([FromQuery] PersonRequestDto entity)
         {
