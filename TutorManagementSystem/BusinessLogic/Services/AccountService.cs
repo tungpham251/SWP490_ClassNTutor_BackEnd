@@ -178,8 +178,9 @@ namespace BusinessLogic.Services
                     signingCredentials: credentials);
 
                 var tokenHandle = new JwtSecurityTokenHandler().WriteToken(token);
+
                 return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName, account.Person.FullName,
-                     account.Person.UserAvatar);               
+                     account.Person.UserAvatar);
 
             }
             catch (Exception)
