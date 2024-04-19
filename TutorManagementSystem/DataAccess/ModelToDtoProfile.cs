@@ -59,6 +59,9 @@ namespace DataAccess
             CreateMap<Schedule, ScheduleDto>();
             CreateMap<SubjectTutor, SubjectTutorDto>()
                 .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject.SubjectName));
+            CreateMap<SubjectTutor, SubjectOfTutorDto>()
+                .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject.SubjectName))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject.Status));
 
             CreateMap<Person, ProfileDto>();
             CreateMap<Tutor, GetTutorDto>()

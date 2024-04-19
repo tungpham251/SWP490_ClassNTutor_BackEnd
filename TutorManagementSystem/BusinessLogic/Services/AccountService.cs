@@ -152,7 +152,7 @@ namespace BusinessLogic.Services
         {
             try
             {
-                var account = await _context.Accounts.Include(x => x.Role).Where(x => x.Email.Trim().ToLower()
+                var account = await _context.Accounts.Include(x => x.Role).Include(x => x.Person).Where(x => x.Email.Trim().ToLower()
                 .Equals(entity.Email!.Trim().ToLower())).FirstOrDefaultAsync();
 
                 var check = PasswordHashUtility.VerifyPassword(entity.Password!, account!.Password);
@@ -178,8 +178,8 @@ namespace BusinessLogic.Services
                     signingCredentials: credentials);
 
                 var tokenHandle = new JwtSecurityTokenHandler().WriteToken(token);
-
-                return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName);
+                return new LoginResponseDto(tokenHandle, account.PersonId, account.Role.RoleName, account.Person.FullName,
+                     account.Person.UserAvatar);               
 
             }
             catch (Exception)
