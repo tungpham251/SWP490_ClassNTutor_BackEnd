@@ -28,8 +28,10 @@ namespace BusinessLogic.Services
 
                 var newPayment = _mapper.Map<Payment>(entity);
                 newPayment.PaymentId = lastPayment.PaymentId + 1;
-                newPayment.CreatedAt = newPayment.UpdatedAt = DateTime.Now;
-
+                newPayment.CreatedAt = DateTime.Now;
+                newPayment.RequestDate = DateTime.Now;
+                newPayment.PaymentType = "AccountMaintenanceFee";
+                newPayment.Status = "UNPAID";
                 await _context.Payments.AddAsync(newPayment).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -89,7 +91,7 @@ namespace BusinessLogic.Services
 
         public async Task<bool> UpdatePayment(long paymentId, string status)
         {
-            var result = await _paymentRepository.UpdateDescriptionPayment(paymentId, status).ConfigureAwait(false);
+            var result = await _paymentRepository.UpdateStatusPayment(paymentId, status).ConfigureAwait(false);
             return result;
         }
     }
