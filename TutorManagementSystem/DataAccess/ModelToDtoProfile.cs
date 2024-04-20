@@ -72,6 +72,10 @@ namespace DataAccess
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Person.Phone));
             CreateMap<Account, AccountDto>().ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName));
             CreateMap<Staff, GetStaffDto>();
+
+            CreateMap<Attendent, AttendentDto>()
+               .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent.FullName))
+               .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent.UserAvatar));
         }
 
     }

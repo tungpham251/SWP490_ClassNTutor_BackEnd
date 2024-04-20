@@ -92,6 +92,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ISubjectTutorService, SubjectTutorService>();
 builder.Services.AddScoped<IEvaluationService, EvaluationService>();
 builder.Services.AddScoped<ITutorService, TutorService>();
+builder.Services.AddScoped<IAttendentService, AttendentService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
