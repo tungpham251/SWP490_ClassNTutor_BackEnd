@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace DataAccess.Dtos
 {
     public class SearchFilterPaymentDto
-    {
+    {   
+        public string? SearchWord { get; set; }
         public int? PaymentAmount { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
@@ -16,7 +17,22 @@ namespace DataAccess.Dtos
         public DateTime? CreatedFrom { get; set; }
         public DateTime? CreatedTo { get; set; }
         public string? Status { get; set; }
+
     }
+
+    public class SearchFilterPaymentCurrentUserDto
+    {
+        [Required]
+        public PagingRequest PagingRequest { get; set; } = null!;
+
+        public string? SearchWord { get; set; }
+        public DateTime? CreatedFrom { get; set; }
+        public DateTime? CreatedTo { get; set; }
+        public string? Status { get; set; }
+        public int? PaymentAmount { get; set; }
+
+    }
+
     public class ResponsePaymentDto
     {
         public long PaymentId { get; set; }
@@ -47,12 +63,5 @@ namespace DataAccess.Dtos
 
     }
 
-    public class SearchFilterPaymentCurrentUserDto
-    {
-        [Required]
-        public PagingRequest PagingRequest { get; set; } = null!;
-
-        public string? Status { get; set; }
-        public string? FullName { get; set; }
-    }
+    
 }

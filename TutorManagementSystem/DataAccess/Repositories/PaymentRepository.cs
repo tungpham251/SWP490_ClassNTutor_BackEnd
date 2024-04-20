@@ -19,7 +19,14 @@ namespace DataAccess.Repositories
 
             IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
                                                           .Include(p => p.Request).ThenInclude(r => r.Person);
-
+            if (entity.SearchWord != null)
+            {
+                result = result.Where(p => p.Status.ToLower() == entity.SearchWord.Trim().ToLower()
+                                        || p.Payer.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.Request.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.PaymentAmount.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.PaymentType.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower()));
+            }
             if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
             {
                 result = result.Where(p => p.PaymentAmount >= entity.PaymentAmount);
@@ -40,6 +47,41 @@ namespace DataAccess.Repositories
             {
                 result = result.Where(p => p.CreatedAt >= entity.CreatedFrom && p.CreatedAt <= entity.CreatedTo);
             }
+            if (entity.Status != null)
+            {
+                result = result.Where(p => p.Status.ToLower() == entity.Status.Trim().ToLower());
+            }
+
+            return result;
+        }
+
+        public IQueryable<Payment> SearchAndFilterPaymentByCurrentUser(SearchFilterPaymentCurrentUserDto entity, string personId)
+        {
+            var currentId = long.Parse(personId);
+            IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                          .Include(p => p.Request).ThenInclude(r => r.Person)
+                                                          .Where(p => p.PayerId.Equals(currentId) || p.RequestId.Equals(currentId));
+
+            if (entity.SearchWord != null)
+            {
+                result = result.Where(p => p.Status.ToLower() == entity.SearchWord.Trim().ToLower()
+                                        || p.Payer.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.Request.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.PaymentAmount.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower())
+                                        || p.PaymentType.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower()));
+            }
+
+            if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
+            {
+                result = result.Where(p => p.PaymentAmount >= entity.PaymentAmount);
+            }
+
+            if ((entity.CreatedFrom != DateTime.MinValue && entity.CreatedFrom != null)
+               && (entity.CreatedTo != DateTime.MinValue && entity.CreatedTo != null))
+            {
+                result = result.Where(p => p.CreatedAt >= entity.CreatedFrom && p.CreatedAt <= entity.CreatedTo);
+            }
+
             if (entity.Status != null)
             {
                 result = result.Where(p => p.Status.ToLower() == entity.Status.Trim().ToLower());
@@ -68,12 +110,15 @@ namespace DataAccess.Repositories
             return false;
         }
 
-        public async Task<bool> UpdateDescriptionPayment(long paymentId, string status)
+        public async Task<bool> UpdateStatusPayment(long paymentId, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
             if (payment != null)
             {
                 payment.Status = status;
+                payment.PayDate = DateTime.Now;
+                payment.UpdatedAt = DateTime.Now;
+
                 _context.Payments.Update(payment);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -81,24 +126,6 @@ namespace DataAccess.Repositories
             return false;
         }
 
-        public IQueryable<Payment> SearchAndFilterPaymentByCurrentUser(SearchFilterPaymentCurrentUserDto entity, string personId)
-        {
-            var currentId = long.Parse(personId);
-            IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
-                                                          .Include(p => p.Request).ThenInclude(r => r.Person)
-                                                          .Where(p => p.PayerId.Equals(currentId) || p.RequestId.Equals(currentId));
-
-            if (entity.Status != null)
-            {
-                result = result.Where(p => p.Status.ToLower() == entity.Status.Trim().ToLower());
-            }
-            if (entity.FullName != null)
-            {
-                result = result.Where(p => p.Payer.Person.FullName.ToLower().Contains(entity.FullName.Trim().ToLower())
-                                        || p.Request.Person.FullName.ToLower().Contains(entity.FullName.Trim().ToLower()));
-            }
-
-            return result;
-        }
+        
     }
 }
