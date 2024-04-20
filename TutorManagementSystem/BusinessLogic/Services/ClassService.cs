@@ -133,12 +133,13 @@ namespace BusinessLogic.Services
         {
             try
             {
-
+               
                 var listSchedule = _context.Classes.Include(c => c.Schedules)
                                                    .FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
+
                 if (listSchedule.Any())
                 {
-                    listSchedule.ToList().ForEach(s => s.Status = "SUSPEND");
+                    listSchedule.ToList().ForEach(s => s.Status = "DELETED");
                     _context.Schedules.UpdateRange(listSchedule);
                 }
 
