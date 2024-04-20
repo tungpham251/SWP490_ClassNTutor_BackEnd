@@ -25,7 +25,7 @@ namespace DataAccess.Repositories
                                         || p.Payer.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
                                         || p.Request.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
                                         || p.PaymentAmount.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower())
-                                        || p.PaymentType.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower()));
+                                        || p.PaymentType.ToLower().Contains(entity.SearchWord.Trim().ToLower()));
             }
             if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
             {
@@ -68,7 +68,7 @@ namespace DataAccess.Repositories
                                         || p.Payer.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
                                         || p.Request.Person.FullName.ToLower().Contains(entity.SearchWord.Trim().ToLower())
                                         || p.PaymentAmount.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower())
-                                        || p.PaymentType.ToString().ToLower().Contains(entity.SearchWord.Trim().ToLower()));
+                                        || p.PaymentType.ToLower().Contains(entity.SearchWord.Trim().ToLower()));
             }
 
             if (entity.PaymentAmount != 0 && entity.PaymentAmount != null)
