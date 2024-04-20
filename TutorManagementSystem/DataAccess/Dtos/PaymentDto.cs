@@ -15,6 +15,7 @@ namespace DataAccess.Dtos
         public long RequestId { get; set; }
         public DateTime? CreatedFrom { get; set; }
         public DateTime? CreatedTo { get; set; }
+        public string? Status { get; set; }
     }
     public class ResponsePaymentDto
     {
@@ -44,5 +45,14 @@ namespace DataAccess.Dtos
         public DateTime? UpdatedAt { get; set; }
         public string Status { get; set; } = null!;
 
+    }
+
+    public class SearchFilterPaymentCurrentUserDto
+    {
+        [Required]
+        public PagingRequest PagingRequest { get; set; } = null!;
+
+        public string? Status { get; set; }
+        public string? FullName { get; set; }
     }
 }

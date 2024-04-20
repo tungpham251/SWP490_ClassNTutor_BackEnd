@@ -48,6 +48,16 @@ namespace BusinessLogic.Services
             }
         }
 
+        public async Task<IEnumerable<SubjectOfTutorDto>> GetSubjectsTutor(long tutorId)
+        {
+            var subjectsTutor = await _context.SubjectTutors.Where(x => x.TutorId == tutorId)
+                                .Include(x => x.Subject).ToListAsync().ConfigureAwait(false);
+
+            if (subjectsTutor == null) return null;
+
+            return _mapper.Map<IEnumerable<SubjectOfTutorDto>>(subjectsTutor);
+        }
+
         public async Task<bool> DeleteSubject(int id)
         {
             try

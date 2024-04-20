@@ -14,30 +14,32 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public IQueryable<FilterScheduleDto> FilterScheduleParent(TimeSpan? from, TimeSpan? to, long classId, long personId)
+        public IQueryable<FilterScheduleDto> FilterScheduleParent(DateTime? from, DateTime? to, long classId, long personId)
         {
-            var result = from s in _context.Schedules
-                         join c in _context.Classes on s.ClassId equals c.ClassId
-                         join m in _context.ClassMembers on c.ClassId equals m.ClassId
-                         join t in _context.Students on m.StudentId equals t.StudentId
-                         where t.ParentId == personId
+            var result = from c in _context.Classes
+                         join s in _context.Schedules on c.ClassId equals s.ClassId
+                         join a in _context.Attendents on s.Id equals a.ScheduleId
+                         join st in _context.Students on a.StudentId equals st.StudentId
+                         where st.ParentId == personId
                          select new FilterScheduleDto
                          {
                              Id = s.Id,
                              DayOfWeek = s.DayOfWeek,
                              SessionEnd = s.SessionEnd,
                              SessionStart = s.SessionStart,
+                             Date = s.Date,
                              Status = s.Status,
                              ClassId = c.ClassId,
                              ClassName = c.ClassName
                          };
+
             if (!from.Equals(null))
             {
-                result = result.Where(x => x.SessionStart >= from);
+                result = result.Where(x => x.Date >= from);
             }
             if (!to.Equals(null))
             {
-                result = result.Where(x => x.SessionEnd <= to);
+                result = result.Where(x => x.Date <= to);
             }
             if (classId != 0)
             {
@@ -47,7 +49,7 @@ namespace DataAccess.Repositories
             return result;
         }
 
-        public IQueryable<FilterScheduleDto> FilterScheduleTutor(TimeSpan? from, TimeSpan? to, long classId, long personId)
+        public IQueryable<FilterScheduleDto> FilterScheduleTutor(DateTime? from, DateTime? to, long classId, long personId)
         {
             var result = from s in _context.Schedules
                          join c in _context.Classes on s.ClassId equals c.ClassId
@@ -58,17 +60,18 @@ namespace DataAccess.Repositories
                              DayOfWeek = s.DayOfWeek,
                              SessionEnd = s.SessionEnd,
                              SessionStart = s.SessionStart,
+                             Date = s.Date,
                              Status = s.Status,
                              ClassId = c.ClassId,
                              ClassName = c.ClassName
                          };
             if (!from.Equals(null))
             {
-                result = result.Where(x => x.SessionStart >= from);
+                result = result.Where(x => x.Date >= from);
             }
             if (!to.Equals(null))
             {
-                result = result.Where(x => x.SessionEnd <= to);
+                result = result.Where(x => x.Date <= to);
             }
             if (classId != 0)
             {

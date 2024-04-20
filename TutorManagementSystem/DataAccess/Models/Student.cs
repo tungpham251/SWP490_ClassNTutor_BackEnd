@@ -7,6 +7,7 @@ namespace DataAccess.Models
     {
         public Student()
         {
+            Attendents = new HashSet<Attendent>();
             ClassMembers = new HashSet<ClassMember>();
             Evaluations = new HashSet<Evaluation>();
             Requests = new HashSet<Request>();
@@ -19,6 +20,7 @@ namespace DataAccess.Models
 
         public virtual Person Parent { get; set; } = null!;
         public virtual Person StudentNavigation { get; set; } = null!;
+        public virtual ICollection<Attendent> Attendents { get; set; }
         public virtual ICollection<ClassMember> ClassMembers { get; set; }
         public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<Request> Requests { get; set; }
