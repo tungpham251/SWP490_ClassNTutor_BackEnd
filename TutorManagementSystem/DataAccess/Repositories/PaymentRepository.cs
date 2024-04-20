@@ -38,7 +38,11 @@ namespace DataAccess.Repositories
             if ((entity.CreatedFrom != DateTime.MinValue && entity.CreatedFrom != null)
                 && (entity.CreatedTo != DateTime.MinValue && entity.CreatedTo != null))
             {
-                result = result.Where(p => p.RequestDate >= entity.CreatedFrom && p.RequestDate <= entity.CreatedTo);
+                result = result.Where(p => p.CreatedAt >= entity.CreatedFrom && p.CreatedAt <= entity.CreatedTo);
+            }
+            if (entity.Status != null)
+            {
+                result = result.Where(p => p.Status.ToLower() == entity.Status.Trim().ToLower());
             }
 
             return result;
@@ -75,6 +79,26 @@ namespace DataAccess.Repositories
                 return true;
             }
             return false;
+        }
+
+        public IQueryable<Payment> SearchAndFilterPaymentByCurrentUser(SearchFilterPaymentCurrentUserDto entity, string personId)
+        {
+            var currentId = long.Parse(personId);
+            IQueryable<Payment> result = _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
+                                                          .Include(p => p.Request).ThenInclude(r => r.Person)
+                                                          .Where(p => p.PayerId.Equals(currentId) || p.RequestId.Equals(currentId));
+
+            if (entity.Status != null)
+            {
+                result = result.Where(p => p.Status.ToLower() == entity.Status.Trim().ToLower());
+            }
+            if (entity.FullName != null)
+            {
+                result = result.Where(p => p.Payer.Person.FullName.ToLower().Contains(entity.FullName.Trim().ToLower())
+                                        || p.Request.Person.FullName.ToLower().Contains(entity.FullName.Trim().ToLower()));
+            }
+
+            return result;
         }
     }
 }

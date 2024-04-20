@@ -18,6 +18,7 @@ namespace DataAccess.Models
         public string ClassName { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
+        public int NumOfSession { get; set; }
         public long Price { get; set; }
         public long SubjectId { get; set; }
         public DateTime StartDate { get; set; }

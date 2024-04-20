@@ -22,7 +22,14 @@ namespace API.Controllers
             var result = await _subjectService.GetSubjects(entity).ConfigureAwait(false);
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
-       
+
+        [HttpGet("get-subjects-tutor/{tutorId}")]
+        public async Task<IActionResult> GetSubjectsTutor([FromRoute] long tutorId)
+        {
+            var result = await _subjectService.GetSubjectsTutor(tutorId).ConfigureAwait(false);
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
         [HttpGet("get-subject-by-id/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

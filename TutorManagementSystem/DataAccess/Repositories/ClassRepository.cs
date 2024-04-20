@@ -40,7 +40,7 @@ namespace DataAccess.Repositories
         }
 
 
-        public IQueryable<ClassDto> SearchClass(string searchWord, string status)
+        public IQueryable<ClassDto> SearchClass(string searchWord, string status, long? subjectId)
         {
             var query = from c in _context.Classes
                         join sj in _context.Subjects on c.SubjectId equals sj.SubjectId
@@ -78,6 +78,11 @@ namespace DataAccess.Repositories
                 query = query.Where(c => c.Status!.Equals(status));
             }
 
+            if (subjectId != null)
+            {
+                var subject = _context.Subjects.Where(x => x.SubjectId.Equals(subjectId)).FirstOrDefault();
+                query = query.Where(c => c.SubjectName == subject.SubjectName);
+            }
             return query.OrderBy(x => x.ClassId);
 
         }

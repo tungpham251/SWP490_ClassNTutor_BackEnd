@@ -18,6 +18,7 @@ namespace DataAccess.Models
         }
 
         public virtual DbSet<Account> Accounts { get; set; } = null!;
+        public virtual DbSet<Attendent> Attendents { get; set; } = null!;
         public virtual DbSet<Class> Classes { get; set; } = null!;
         public virtual DbSet<ClassMember> ClassMembers { get; set; } = null!;
         public virtual DbSet<Evaluation> Evaluations { get; set; } = null!;
@@ -92,6 +93,32 @@ namespace DataAccess.Models
                     .HasConstraintName("fk_account_role");
             });
 
+            modelBuilder.Entity<Attendent>(entity =>
+            {
+                entity.HasKey(e => new { e.ScheduleId, e.StudentId })
+                    .HasName("PK__Attenden__71E3F0B79F8DB9F8");
+
+                entity.ToTable("Attendent");
+
+                entity.Property(e => e.ScheduleId).HasColumnName("scheduleId");
+
+                entity.Property(e => e.StudentId).HasColumnName("studentId");
+
+                entity.Property(e => e.Attentdent).HasColumnName("attentdent");
+
+                entity.HasOne(d => d.Schedule)
+                    .WithMany(p => p.Attendents)
+                    .HasForeignKey(d => d.ScheduleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_attentdent_schedule");
+
+                entity.HasOne(d => d.Student)
+                    .WithMany(p => p.Attendents)
+                    .HasForeignKey(d => d.StudentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_attentdent_student");
+            });
+
             modelBuilder.Entity<Class>(entity =>
             {
                 entity.ToTable("Class");
@@ -121,6 +148,8 @@ namespace DataAccess.Models
                     .HasColumnName("endDate");
 
                 entity.Property(e => e.MaxCapacity).HasColumnName("maxCapacity");
+
+                entity.Property(e => e.NumOfSession).HasColumnName("numOfSession");
 
                 entity.Property(e => e.Price).HasColumnName("price");
 
@@ -440,6 +469,10 @@ namespace DataAccess.Models
 
                 entity.Property(e => e.ClassId).HasColumnName("classId");
 
+                entity.Property(e => e.Date)
+                    .HasColumnType("date")
+                    .HasColumnName("date");
+
                 entity.Property(e => e.DayOfWeek)
                     .HasMaxLength(12)
                     .IsUnicode(false)
@@ -512,7 +545,8 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<SubjectTutor>(entity =>
             {
-                entity.HasKey(e => new { e.SubjectId, e.TutorId, e.Level });
+                entity.HasKey(e => new { e.SubjectId, e.TutorId, e.Level })
+                    .HasName("PK__SubjectT__08E21A3CF2F9E989");
 
                 entity.ToTable("SubjectTutor");
 
