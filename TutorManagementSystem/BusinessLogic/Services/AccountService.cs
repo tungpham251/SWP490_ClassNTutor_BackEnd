@@ -303,5 +303,22 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+
+        public async Task<bool> SuspendAccount(long id)
+        {
+            try
+            {
+                var account = await _context.Accounts.Where(x => x.PersonId == id).FirstOrDefaultAsync().ConfigureAwait(false);
+                if (account == null) return false;
+                account.Status = "SUSPEND";
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

@@ -79,14 +79,14 @@ namespace API.Controllers
 
         [Authorize(Roles = "STAFF,TUTOR")]
         [HttpGet("get-payment-by-current-user")]
-        public async Task<IActionResult> GetPaymentByCurrentUser()
+        public async Task<IActionResult> GetPaymentByCurrentUser([FromQuery] SearchFilterPaymentCurrentUserDto entity)
         {
 
             string personId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(personId))
                 return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
 
-            var result = await _paymentService.GetPaymentByCurrentUser(personId).ConfigureAwait(false);
+            var result = await _paymentService.GetPaymentByCurrentUser(entity, personId).ConfigureAwait(false);
             if (result == null)
             {
                 return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));

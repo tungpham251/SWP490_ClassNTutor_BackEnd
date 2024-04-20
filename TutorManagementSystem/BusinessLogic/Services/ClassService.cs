@@ -51,7 +51,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<ClassDto>> GetClasses(ClassRequestDto entity)
         {
-            var search = _classRepository.SearchClass(entity.SearchWord!, entity.Status!);
+            var search = _classRepository.SearchClass(entity.SearchWord!, entity.Status!, entity.SubjectId!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
