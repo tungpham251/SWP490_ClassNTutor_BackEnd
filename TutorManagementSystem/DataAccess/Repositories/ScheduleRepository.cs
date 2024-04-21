@@ -30,7 +30,8 @@ namespace DataAccess.Repositories
                              Date = s.Date,
                              Status = s.Status,
                              ClassId = c.ClassId,
-                             ClassName = c.ClassName
+                             ClassName = c.ClassName,
+                             Attendent = a.Attentdent
                          };
 
             if (!from.Equals(null))
