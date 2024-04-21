@@ -97,6 +97,7 @@ namespace DataAccess.Dtos
         public string ClassName { get; set; } = null!;
         public string? ClassDesc { get; set; }
         public int ClassLevel { get; set; }
+        public int NumOfSession { get; set; }
         public long Price { get; set; }
         public string SubjectName { get; set; }
         public long SubjectId { get; set; }
