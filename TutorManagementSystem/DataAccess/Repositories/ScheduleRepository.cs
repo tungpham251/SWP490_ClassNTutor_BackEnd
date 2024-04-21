@@ -20,6 +20,7 @@ namespace DataAccess.Repositories
                          join s in _context.Schedules on c.ClassId equals s.ClassId
                          join a in _context.Attendents on s.Id equals a.ScheduleId
                          join st in _context.Students on a.StudentId equals st.StudentId
+                         join p in _context.People on st.StudentId equals p.PersonId
                          where st.ParentId == personId
                          select new FilterScheduleDto
                          {
@@ -30,7 +31,9 @@ namespace DataAccess.Repositories
                              Date = s.Date,
                              Status = s.Status,
                              ClassId = c.ClassId,
-                             ClassName = c.ClassName
+                             ClassName = c.ClassName,
+                             StudentName = p.FullName,
+                             Attendent = a.Attentdent
                          };
 
             if (!from.Equals(null))
