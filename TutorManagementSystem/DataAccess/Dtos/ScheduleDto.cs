@@ -12,6 +12,7 @@ namespace DataAccess.Dtos
         public string DayOfWeek { get; set; } = null!;
         public TimeSpan SessionStart { get; set; }
         public TimeSpan SessionEnd { get; set; }
+        public DateTime? Date { get; set; }
         public string Status { get; set; } = null!;
     }
     public class AddScheduleDto
