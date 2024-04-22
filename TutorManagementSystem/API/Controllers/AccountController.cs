@@ -85,6 +85,18 @@ namespace API.Controllers
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
-      
+
+        [HttpPut("suspend-account/{id}")]
+        public async Task<IActionResult> SuspendAccount([FromRoute] long id)
+        {
+
+            var result = await _accountService.SuspendAccount(id).ConfigureAwait(false);
+            if (result == false)
+            {
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            }
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
     }
 }

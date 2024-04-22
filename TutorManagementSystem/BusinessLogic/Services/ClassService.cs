@@ -51,7 +51,7 @@ namespace BusinessLogic.Services
 
         public async Task<ViewPaging<ClassDto>> GetClasses(ClassRequestDto entity)
         {
-            var search = _classRepository.SearchClass(entity.SearchWord!, entity.Status!);
+            var search = _classRepository.SearchClass(entity.SearchWord!, entity.Status!, entity.SubjectId!);
 
             var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
                 .Take(entity.PagingRequest.PageSize).OrderBy(x => x.ClassId)
@@ -133,12 +133,13 @@ namespace BusinessLogic.Services
         {
             try
             {
-
+               
                 var listSchedule = _context.Classes.Include(c => c.Schedules)
                                                    .FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
+
                 if (listSchedule.Any())
                 {
-                    listSchedule.ToList().ForEach(s => s.Status = "SUSPEND");
+                    listSchedule.ToList().ForEach(s => s.Status = "DELETED");
                     _context.Schedules.UpdateRange(listSchedule);
                 }
 
@@ -211,6 +212,93 @@ namespace BusinessLogic.Services
                         var classMember = _mapper.Map<ClassMember>(item);
                         classMember.Id = findLast!.Id + 1;
                         classMember.Status = "CREATED";
+
+                        //check member
+                        var membersInClass = await _context.ClassMembers.Where(x => x.ClassId == item.ClassId).ToListAsync().ConfigureAwait(false);
+                        DateTime currentDate = DateTime.Now.Date;
+                        if (!membersInClass.Any())
+                        {
+                            var schedulesOfClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId && currentDate > x.Date).ToListAsync().ConfigureAwait(false);
+                            if (!schedulesOfClass.Any())
+                            {
+                                //add schedule attendent
+                                var schedulesClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId).ToListAsync().ConfigureAwait(false);
+                                CreateAttendForStudent(schedulesClass, item.StudentId);
+                            }
+                            else
+                            {
+                                var findClass = await _context.Classes.Where(x => x.ClassId == item.ClassId).FirstOrDefaultAsync().ConfigureAwait(false);
+
+                                var newSchedules = await _context.Schedules.Where(x => x.ClassId == item.ClassId).ToListAsync().ConfigureAwait(false); ;
+                                _context.Schedules.RemoveRange(newSchedules);
+                                await _context.SaveChangesAsync().ConfigureAwait(false);
+                                newSchedules = newSchedules.DistinctBy(x => x.DayOfWeek).ToList();
+                                foreach (var ns in newSchedules)
+                                {
+                                    DateTime nearestDate = DateTime.Now.Date;
+                                    int currentDayOfWeekOrder = GetDayOfWeekOrder(ns.DayOfWeek);
+                                    int todayDayOfWeekOrder = (int)DateTime.Now.DayOfWeek;
+
+                                    if (currentDayOfWeekOrder == todayDayOfWeekOrder)
+                                    {
+                                        ns.Date = nearestDate;
+                                    }
+                                    else
+                                    {
+                                        while (currentDayOfWeekOrder != todayDayOfWeekOrder)
+                                        {
+                                            nearestDate = nearestDate.AddDays(1);
+                                            todayDayOfWeekOrder = (int)nearestDate.DayOfWeek;
+                                        }
+
+                                        ns.Date = nearestDate;
+                                    }
+                                }
+
+                                int count = newSchedules.Count();
+                                int countStart = newSchedules.Count();
+                                int countSchedules = newSchedules.Count();
+                                List<Schedule> newSchedulesList = newSchedules.ToList();
+                                for (int i = 0; i < findClass.NumOfSession; i++)
+                                {
+                                    countSchedules = newSchedulesList.Count();
+                                    for (int j = countSchedules; j > countSchedules - countStart; j--)
+                                    {
+                                        Schedule existingSchedule = newSchedulesList[j - 1];
+                                        Schedule newSchedule = new Schedule();
+                                        newSchedule.Date = existingSchedule.Date.Value.AddDays(7).Date;
+                                        newSchedule.ClassId = existingSchedule.ClassId;
+                                        newSchedule.DayOfWeek = existingSchedule.DayOfWeek;
+                                        newSchedule.SessionStart = existingSchedule.SessionStart;
+                                        newSchedule.SessionEnd = existingSchedule.SessionEnd;
+                                        newSchedule.Status = existingSchedule.Status;
+                                        newSchedulesList.Add(newSchedule);
+                                        count++;
+
+                                        if (count == findClass.NumOfSession)
+                                            break;
+                                    }
+
+                                    if (count == findClass.NumOfSession)
+                                        break;
+                                }
+                                var lastSchedule = await _context.Schedules.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
+                                var newScheduleId = lastSchedule.Id + 1;
+                                newSchedulesList.ToList().ForEach(s => { s.ClassId = findClass.ClassId; s.Id = newScheduleId++; });
+                                await _context.Schedules.AddRangeAsync(newSchedulesList).ConfigureAwait(false);
+                                await _context.SaveChangesAsync().ConfigureAwait(false);
+                                //add schedule attendent
+                                var schedulesClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId).ToListAsync().ConfigureAwait(false);
+                                CreateAttendForStudent(schedulesClass, item.StudentId);
+                            }
+                        }
+                        else
+                        {
+                            //add schedule attendent
+                            var schedulesOfClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId && x.Date > currentDate).ToListAsync().ConfigureAwait(false);
+                            CreateAttendForStudent(schedulesOfClass, item.StudentId);
+                        }
+
                         await _context.ClassMembers.AddAsync(classMember).ConfigureAwait(false);
                     }
 
@@ -222,6 +310,19 @@ namespace BusinessLogic.Services
             {
                 return false;
             }
+        }
+        private async void CreateAttendForStudent(List<Schedule> schedulesOfClass, long studentId)
+        {
+            List<Attendent> attendents = new List<Attendent>();
+            foreach (var schedule in schedulesOfClass)
+            {
+                Attendent attendent = new Attendent();
+                attendent.StudentId = studentId;
+                attendent.ScheduleId = schedule.Id;
+                attendent.Attentdent = 0;
+                attendents.Add(attendent);
+            }
+            await _context.Attendents.AddRangeAsync(attendents).ConfigureAwait(false);
         }
 
         public async Task<bool> DeleteStudentInClass(DeleteStudentInClassRequestDto entity)
@@ -235,6 +336,11 @@ namespace BusinessLogic.Services
 
                 classMember.Status = "DELETED";
                 _context.ClassMembers.Update(classMember);
+
+                //delete schedules
+                var schedulesOfStudent = await _context.Attendents.Where(x => x.StudentId == entity.StudentId && x.Schedule.ClassId == entity.ClassId).ToListAsync().ConfigureAwait(false);
+                _context.Attendents.RemoveRange(schedulesOfStudent);
+
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
@@ -248,6 +354,7 @@ namespace BusinessLogic.Services
         {
             try
             {
+                if (entity.NumOfSession < entity.AddScheduleDto.Count()) return false;
                 var lastClassId = await _context.Classes.OrderBy(x => x.ClassId).LastOrDefaultAsync().ConfigureAwait(false);
                 var newClass = _mapper.Map<Class>(entity);
                 newClass.ClassId = lastClassId.ClassId + 1;
@@ -260,8 +367,59 @@ namespace BusinessLogic.Services
                     var lastSchedule = await _context.Schedules.OrderBy(x => x.Id).LastOrDefaultAsync().ConfigureAwait(false);
                     var newScheduleId = lastSchedule.Id + 1;
                     var newSchedules = _mapper.Map<IEnumerable<Schedule>>(entity.AddScheduleDto);
-                    newSchedules.ToList().ForEach(s => { s.ClassId = newClass.ClassId; s.Id = newScheduleId++; });
-                    await _context.Schedules.AddRangeAsync(newSchedules).ConfigureAwait(false);
+
+
+                    foreach (var ns in newSchedules)
+                    {
+                        DateTime nearestDate = DateTime.Now.Date;
+                        int currentDayOfWeekOrder = GetDayOfWeekOrder(ns.DayOfWeek);
+                        int todayDayOfWeekOrder = (int)DateTime.Now.DayOfWeek;
+
+                        if (currentDayOfWeekOrder == todayDayOfWeekOrder)
+                        {
+                            ns.Date = nearestDate;
+                        }
+                        else
+                        {
+                            while (currentDayOfWeekOrder != todayDayOfWeekOrder)
+                            {
+                                nearestDate = nearestDate.AddDays(1);
+                                todayDayOfWeekOrder = (int)nearestDate.DayOfWeek;
+                            }
+
+                            ns.Date = nearestDate;
+                        }
+                    }
+
+                    int count = newSchedules.Count();
+                    int countStart = newSchedules.Count();
+                    int countSchedules = newSchedules.Count();
+                    List<Schedule> newSchedulesList = newSchedules.ToList();
+                    for (int i = 0; i < entity.NumOfSession; i++)
+                    {
+                        countSchedules = newSchedulesList.Count();
+                        for (int j = countSchedules; j > countSchedules - countStart; j--)
+                        {
+                            Schedule existingSchedule = newSchedulesList[j - 1];
+                            Schedule newSchedule = new Schedule();
+                            newSchedule.Date = existingSchedule.Date.Value.AddDays(7).Date;
+                            newSchedule.ClassId = existingSchedule.ClassId;
+                            newSchedule.DayOfWeek = existingSchedule.DayOfWeek;
+                            newSchedule.SessionStart = existingSchedule.SessionStart;
+                            newSchedule.SessionEnd = existingSchedule.SessionEnd;
+                            newSchedule.Status = existingSchedule.Status;
+                            newSchedulesList.Add(newSchedule);
+                            count++;
+
+                            if (count == entity.NumOfSession)
+                                break;
+                        }
+
+                        if (count == entity.NumOfSession)
+                            break;
+                    }
+                    newSchedulesList.ToList().ForEach(s => { s.ClassId = newClass.ClassId; s.Id = newScheduleId++; });
+                    await _context.Schedules.AddRangeAsync(newSchedulesList).ConfigureAwait(false);
                 }
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
@@ -295,13 +453,8 @@ namespace BusinessLogic.Services
                 //update schedule
                 if (entity.UpdateScheduleDto != null)
                 {
-                    // remove old schedule
-                    var oldSchedules = await _context.Schedules.Where(x => x.ClassId == entity.ClassId).ToListAsync().ConfigureAwait(false);
-                    if (oldSchedules.Any())
-                    {
-                        _context.Schedules.RemoveRange(oldSchedules);
-                    }
-                    var addSchedules = entity.UpdateScheduleDto.ToList();
+                    var addSchedules = entity.UpdateScheduleDto.Where(s => s.Id.Equals(-1L));
+                    var updateSchedule = entity.UpdateScheduleDto.Where(s => !s.Id.Equals(-1L));
                     //add new schedule
                     if (addSchedules.Any())
                     {
@@ -311,6 +464,22 @@ namespace BusinessLogic.Services
                         newSchedules.ToList().ForEach(s => { s.ClassId = result.ClassId; s.Id = newScheduleId++; });
                         await _context.Schedules.AddRangeAsync(newSchedules).ConfigureAwait(false);
                     }
+                    //update old schedule
+                    if (updateSchedule.Any())
+                    {
+                        var updateSchedules = new List<Schedule>();
+                        foreach (var schedule in updateSchedule)
+                        {
+                            var oldSchedule = await _context.Schedules.FirstOrDefaultAsync(s => s.Id.Equals(schedule.Id)).ConfigureAwait(false);
+                            oldSchedule.DayOfWeek = schedule.DayOfWeek;
+                            oldSchedule.SessionStart = schedule.SessionStart;
+                            oldSchedule.SessionEnd = schedule.SessionEnd;
+                            oldSchedule.Status = schedule.Status;
+                            updateSchedules.Add(oldSchedule);
+                        }
+                        _context.Schedules.UpdateRange(updateSchedules);
+                    }
+
                 }
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -318,6 +487,29 @@ namespace BusinessLogic.Services
             catch
             {
                 return false;
+            }
+        }
+
+        static int GetDayOfWeekOrder(string dayOfWeek)
+        {
+            switch (dayOfWeek.ToUpper())
+            {
+                case "MON":
+                    return 1;
+                case "TUE":
+                    return 2;
+                case "WED":
+                    return 3;
+                case "THU":
+                    return 4;
+                case "FRI":
+                    return 5;
+                case "SAT":
+                    return 6;
+                case "SUN":
+                    return 7;
+                default:
+                    throw new ArgumentException("Invalid day of week: " + dayOfWeek);
             }
         }
 

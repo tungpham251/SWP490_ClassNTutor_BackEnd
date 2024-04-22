@@ -16,4 +16,12 @@ namespace DataAccess.Dtos
         public PagingRequest PagingRequest { get; set; } = null!;
         public string? Status { get; set; }
     }
+
+    public class SubjectOfTutorDto
+    {
+        public long SubjectId { get; set; }
+        public string? SubjectName { get; set; }
+        public string? Status { get; set; }
+        public int Level { get; set; }
+    }
 }

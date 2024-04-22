@@ -28,8 +28,10 @@ namespace BusinessLogic.Services
 
                 var newPayment = _mapper.Map<Payment>(entity);
                 newPayment.PaymentId = lastPayment.PaymentId + 1;
-                newPayment.CreatedAt = newPayment.UpdatedAt = DateTime.Now;
-
+                newPayment.CreatedAt = DateTime.Now;
+                newPayment.RequestDate = DateTime.Now;
+                newPayment.PaymentType = "AccountMaintenanceFee";
+                newPayment.Status = "UNPAID";
                 await _context.Payments.AddAsync(newPayment).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
@@ -46,16 +48,21 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<IEnumerable<ResponsePaymentDto>> GetPaymentByCurrentUser(string personId)
+        public async Task<ViewPaging<ResponsePaymentDto>> GetPaymentByCurrentUser(SearchFilterPaymentCurrentUserDto entity, string personId)
         {
-            var currentId = long.Parse(personId);
-            var search = await _context.Payments.Include(p => p.Payer).ThenInclude(t => t.Person)
-                                                .Include(p => p.Request).ThenInclude(r => r.Person)
-                                                .Where(p => p.PayerId.Equals(currentId) || p.RequestId.Equals(currentId))
-                                                .ToListAsync()
-                                                .ConfigureAwait(false);
-            var result = _mapper.Map<IEnumerable<ResponsePaymentDto>>(search);
-            return result;
+            var search = _paymentRepository.SearchAndFilterPaymentByCurrentUser(entity, personId);
+
+            var pagingList = await search.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                .Take(entity.PagingRequest.PageSize).OrderBy(x => x.PaymentId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var pagination = new Pagination(await search.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<ResponsePaymentDto>>(pagingList);
+
+            return new ViewPaging<ResponsePaymentDto>(result, pagination);
         }
 
         public async Task<ResponsePaymentDto> GetPaymentById(long paymentId)
@@ -84,7 +91,7 @@ namespace BusinessLogic.Services
 
         public async Task<bool> UpdatePayment(long paymentId, string status)
         {
-            var result = await _paymentRepository.UpdateDescriptionPayment(paymentId, status).ConfigureAwait(false);
+            var result = await _paymentRepository.UpdateStatusPayment(paymentId, status).ConfigureAwait(false);
             return result;
         }
     }

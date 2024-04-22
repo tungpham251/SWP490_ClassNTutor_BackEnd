@@ -30,7 +30,7 @@ namespace BusinessLogic.Services
                                           .AsQueryable();
 
             var result = new List<ScheduleDto>();
-            if(classId != 0)
+            if (classId != 0)
             {
                 var classByClassId = await classes.FirstOrDefaultAsync(c => c.ClassId.Equals(classId)).ConfigureAwait(false);
                 if (classByClassId == null)
@@ -41,10 +41,10 @@ namespace BusinessLogic.Services
             {
                 result = _mapper.Map<List<ScheduleDto>>(classes.SelectMany(c => c.Schedules));
             }
-            return  result;
+            return result;
         }
 
-        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(TimeSpan? from, TimeSpan? to, long classId, long personId)
+        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, long classId, long personId)
         {
             var currentUser = await _context.People
                                                     .Include(p => p.Account)

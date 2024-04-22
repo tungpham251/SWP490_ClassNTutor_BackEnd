@@ -42,7 +42,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "STAFF,TUTOR")]
-        [HttpPut("delete-class/{classId}")]
+        [HttpPut("suspend-class/{classId}")]
         public async Task<IActionResult> DeleteClassById([FromRoute] long classId)
         {
             var result = await _classService.DeleteClassById(classId).ConfigureAwait(false);

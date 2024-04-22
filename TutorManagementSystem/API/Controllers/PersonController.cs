@@ -83,7 +83,7 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        //[Authorize(Roles = "STAFF,TUTOR")]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("delete-staff/{id}")]
         public async Task<IActionResult> DeleteStaff(long id)
         {
