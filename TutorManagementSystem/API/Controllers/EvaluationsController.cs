@@ -16,13 +16,13 @@ namespace API.Controllers
             _evaluationService = evaluationService;
         }
 
-        [HttpGet("get-all-evaluation-by-classId/{id}")]
-        public async Task<IActionResult> GetAllEvaluationByClassId([FromRoute] int id)
+        [HttpGet("get-all-evaluation-by-classId")]
+        public async Task<IActionResult> GetAllEvaluationByClassId([FromQuery] RequestEvaluationDto entity)
         {
-            var result = await _evaluationService.GetAllEvaluationByClassId(id).ConfigureAwait(false);
+            var result = await _evaluationService.GetAllEvaluationByClassId(entity).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
-        }
+        }        
 
         [HttpGet("get-detail-evaluation/{id}")]
         public async Task<IActionResult> GetEvaluationByClassId([FromRoute] int id)
@@ -32,39 +32,21 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-
-
         [HttpPost("add-evaluation")]
-        public async Task<IActionResult> AddEvaluation([FromForm] EvaluationDto entity)
+        public async Task<IActionResult> AddEvaluation([FromForm] AddEvaluationDto entity)
         {
             var result = await _evaluationService.AddEvaluation(entity).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-        // DELETE: api/Evaluations/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteEvaluation(long id)
-        //{
-        //    if (_context.Evaluations == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var evaluation = await _context.Evaluations.FindAsync(id);
-        //    if (evaluation == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpGet("get-evaluation-for-parent")]
+        public async Task<IActionResult> GetEvaluationForParent([FromQuery] EvaluationForParentDto entity)
+        {
+            var result = await _evaluationService.GetEvaluationForParent(entity).ConfigureAwait(false);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
 
-        //    _context.Evaluations.Remove(evaluation);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool EvaluationExists(long id)
-        //{
-        //    return (_context.Evaluations?.Any(e => e.EvaluationId == id)).GetValueOrDefault();
-        //}
     }
 }
