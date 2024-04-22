@@ -6,10 +6,10 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface IEvaluationService
     {
-        Task<List<EvaluationDto>> GetAllEvaluationByClassId(int id);
+        Task<ViewPaging<EvaluationDto>> GetAllEvaluationByClassId(RequestEvaluationDto entity);
 
         Task<EvaluationDto> GetDetailEvaluation(int id);
 
-        Task<bool> AddEvaluation(EvaluationDto entity);
+        Task<bool> AddEvaluation(AddEvaluationDto entity);
     }
 }

@@ -102,6 +102,7 @@ builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<ITutorRepository, TutorRepository>();
+builder.Services.AddScoped<IEvaluationRepository, EvaluationRepository>();
 
 builder.Services.AddCors();
 

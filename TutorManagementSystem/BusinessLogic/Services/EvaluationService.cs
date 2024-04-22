@@ -16,57 +16,58 @@ namespace BusinessLogic.Services
     {
         private readonly ClassNTutorContext _context;
         private readonly IMapper _mapper;
+        private readonly IEvaluationRepository _evaluationRepository;
 
-        public EvaluationService(ClassNTutorContext context, IMapper mapper)
+        public EvaluationService(ClassNTutorContext context, IMapper mapper, IEvaluationRepository evaluationRepository)
         {
             _context = context;
             _mapper = mapper;
+            _evaluationRepository = evaluationRepository;
         }
 
-        public async Task<List<EvaluationDto>> GetAllEvaluationByClassId(int id)
+        public async Task<ViewPaging<EvaluationDto>> GetAllEvaluationByClassId(RequestEvaluationDto entity)
         {
-            try
-            {
-                var evaluations = await _context.Evaluations
-                    .Where(x => x.ClassId == id)
-                    .ToListAsync().ConfigureAwait(false);
-                return _mapper.Map<List<EvaluationDto>>(evaluations);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+
+            var evaluations = _evaluationRepository.GetEvaluations(entity.ClassId, entity.StudentId, entity.Date);
+
+            var pagingList = await evaluations.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+           .Take(entity.PagingRequest.PageSize).OrderBy(x => x.EvaluationId)
+           .ToListAsync()
+           .ConfigureAwait(false);
+
+            var pagination = new Pagination(await evaluations.CountAsync(), entity.PagingRequest.CurrentPage,
+                entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+
+            var result = _mapper.Map<IEnumerable<EvaluationDto>>(pagingList);
+
+
+            return new ViewPaging<EvaluationDto>(result, pagination);
+
+
         }
 
         public async Task<EvaluationDto> GetDetailEvaluation(int id)
         {
-            var evaluation = await _context.Evaluations
-              .Where(x => x.EvaluationId == id)
-              .FirstOrDefaultAsync()
-              .ConfigureAwait(false);
 
-            if (evaluation == null) return null;
+            var result = await _evaluationRepository.GetDetailEvaluation(id).FirstOrDefaultAsync().ConfigureAwait(false);
 
-            return _mapper.Map<EvaluationDto>(evaluation);
+            if (result == null) return null;
+
+            return result;
         }
 
-        public async Task<bool> AddEvaluation(EvaluationDto entity)
+        public async Task<bool> AddEvaluation(AddEvaluationDto entity)
         {
             try
             {
-                var checkDuplicate = await _context.Evaluations
-                .Where(x => x.EvaluationId == entity.EvaluationId)
-                .FirstOrDefaultAsync().ConfigureAwait(false);
-
-                if (checkDuplicate != null)
-                {
-                    return false;
-                }
 
                 var lastEvaluationId = await _context.Evaluations.OrderBy(x => x.EvaluationId).LastOrDefaultAsync().ConfigureAwait(false);
 
                 var newEvaluation = _mapper.Map<Evaluation>(entity);
-                newEvaluation.EvaluationId = lastEvaluationId.EvaluationId + 1;
+
+                newEvaluation.EvaluationId = lastEvaluationId!.EvaluationId + 1;
+                newEvaluation.Status = newEvaluation.Status = "CREATED";
+                newEvaluation.UpdatedAt = newEvaluation.CreatedAt = DateTime.Now;
                 await _context.Evaluations.AddAsync(newEvaluation).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
