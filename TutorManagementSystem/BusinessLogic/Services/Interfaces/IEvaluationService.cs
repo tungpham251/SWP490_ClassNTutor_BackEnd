@@ -11,5 +11,7 @@ namespace BusinessLogic.Services.Interfaces
         Task<EvaluationDto> GetDetailEvaluation(int id);
 
         Task<bool> AddEvaluation(AddEvaluationDto entity);
+
+        Task<ViewPaging<EvaluationDto>> GetEvaluationForParent(EvaluationForParentDto entity);
     }
 }

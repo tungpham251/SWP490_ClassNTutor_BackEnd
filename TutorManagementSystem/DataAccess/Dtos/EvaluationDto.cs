@@ -46,9 +46,12 @@ namespace DataAccess.Dtos
     public class EvaluationForParentDto
     {
         [Range(0, long.MaxValue)]
-        public long StudentId { get; set; }
+        public long ParentId { get; set; }
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
+
+        public long? StudentId { get; set; }
+        public DateTime? Date { get; set; }
 
     }
 }
