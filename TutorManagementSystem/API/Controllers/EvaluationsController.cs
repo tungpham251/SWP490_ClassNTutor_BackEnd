@@ -40,6 +40,13 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
-       
+        [HttpGet("get-evaluation-for-parent")]
+        public async Task<IActionResult> GetEvaluationForParent([FromQuery] EvaluationForParentDto entity)
+        {
+            var result = await _evaluationService.GetEvaluationForParent(entity).ConfigureAwait(false);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
     }
 }

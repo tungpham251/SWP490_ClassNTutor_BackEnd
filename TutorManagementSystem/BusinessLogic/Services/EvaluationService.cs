@@ -77,5 +77,21 @@ namespace BusinessLogic.Services
                 return false;
             }
         }
+
+        public async Task<ViewPaging<EvaluationDto>> GetEvaluationForParent(EvaluationForParentDto entity)
+        {
+            var evaluations = _evaluationRepository.GetEvaluationForParent(entity.ParentId, entity.StudentId, entity.Date);
+            var pagingList = await evaluations.Skip(entity.PagingRequest.PageSize * (entity.PagingRequest.CurrentPage - 1))
+                    .Take(entity.PagingRequest.PageSize).OrderBy(x => x.EvaluationId)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+            var pagination = new Pagination(await evaluations.CountAsync(), entity.PagingRequest.CurrentPage,
+     entity.PagingRequest.PageRange, entity.PagingRequest.PageSize);
+            var result = _mapper.Map<IEnumerable<EvaluationDto>>(pagingList);
+
+
+            return new ViewPaging<EvaluationDto>(result, pagination);
+        }
     }
 }
