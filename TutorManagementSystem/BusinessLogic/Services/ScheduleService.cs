@@ -44,7 +44,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, long classId, long personId)
+        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, long classId, long personId, string studentName)
         {
             var currentUser = await _context.People
                                                     .Include(p => p.Account)
@@ -58,7 +58,7 @@ namespace BusinessLogic.Services
             }
             if (currentUser.Account.RoleId.Equals(PARENT))
             {
-                data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
+                data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId, studentName).ToListAsync().ConfigureAwait(false);
             }
             var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
 
