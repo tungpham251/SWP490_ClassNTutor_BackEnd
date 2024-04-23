@@ -12,6 +12,7 @@ namespace DataAccess
             CreateMap<RoleDto, Role>();
             CreateMap<SubjectDto, Subject>();
             CreateMap<EvaluationDto, Evaluation>();
+            CreateMap<AddEvaluationDto, Evaluation>();
             CreateMap<ClassDto, Class>();
             CreateMap<AddClassDto, Class>();
             CreateMap<AddClassIncludeScheduleDto, Class>();
@@ -26,6 +27,7 @@ namespace DataAccess
             CreateMap<CreatePaymentDto, Payment>();
             CreateMap<AddStudentInClassRequestDto, ClassMember>();
             CreateMap<AttendentRequestDto, Attendent>();
+
         }
 
     }

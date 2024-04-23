@@ -40,7 +40,9 @@ namespace DataAccess.Dtos
         [Required]
         public PagingRequest PagingRequest { get; set; } = null!;
         public long? StudentId { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
     }
 
     public class EvaluationForParentDto
@@ -51,7 +53,9 @@ namespace DataAccess.Dtos
         public PagingRequest PagingRequest { get; set; } = null!;
 
         public long? StudentId { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
 
     }
 }

@@ -35,7 +35,7 @@ namespace DataAccess.Repositories
             return query;
         }
 
-        public IQueryable<EvaluationDto> GetEvaluationForParent(long parentId, long? studentId, DateTime? date)
+        public IQueryable<EvaluationDto> GetEvaluationForParent(long parentId, long? studentId, DateTime? startDate, DateTime? endDate)
         {
             var query = from e in _context.Evaluations
                         join c in _context.Classes on e.ClassId equals c.ClassId
@@ -57,18 +57,19 @@ namespace DataAccess.Repositories
                             Status = e.Status
                         };
 
-            if (studentId == 0)
+            if (!(studentId == null))
             {
                 query = query.Where(c => c.StudentId! == studentId);
             }
-            if (!date.Equals(null))
+
+            if (!startDate.Equals(null) && !endDate.Equals(null))
             {
-                query = query.Where(c => c.Date!.Equals(date));
+                query = query.Where(c => startDate <= c.Date && c.Date <= endDate);
             }
             return query.OrderBy(x => x.EvaluationId);
         }
 
-        public IQueryable<EvaluationDto> GetEvaluations(long classId, long? studentId, DateTime? date)
+        public IQueryable<EvaluationDto> GetEvaluations(long classId, long? studentId, DateTime? startDate, DateTime? endDate)
         {
             var query = from e in _context.Evaluations
                         join c in _context.Classes on e.ClassId equals c.ClassId
@@ -89,13 +90,14 @@ namespace DataAccess.Repositories
                             Status = e.Status
                         };
 
-            if (studentId == 0)
+            if (!(studentId == null))
             {
                 query = query.Where(c => c.StudentId! == studentId);
             }
-            if (!date.Equals(null))
+
+            if (!startDate.Equals(null) && !endDate.Equals(null))
             {
-                query = query.Where(c => c.Date!.Equals(date));
+                query = query.Where(c => startDate <= c.Date && c.Date <= endDate);
             }
 
             return query.OrderBy(x => x.EvaluationId);
