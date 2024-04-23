@@ -31,11 +31,11 @@ namespace API.Controllers
         }
 
         [HttpGet("get-filter-schedule")]
-        public async Task<IActionResult> GetFilterSchedule([FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] long classId, [FromQuery] long personId)
+        public async Task<IActionResult> GetFilterSchedule([FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] long classId, [FromQuery] long personId, [FromQuery] string? studentName)
         {
             try
             {
-                var result = await _scheduleService.FilterScheduleFromTo(from, to, classId, personId).ConfigureAwait(false);
+                var result = await _scheduleService.FilterScheduleFromTo(from, to, classId, personId, studentName).ConfigureAwait(false);
 
                 if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
                 return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));

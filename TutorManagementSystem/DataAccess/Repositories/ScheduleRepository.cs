@@ -14,7 +14,7 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public IQueryable<FilterScheduleDto> FilterScheduleParent(DateTime? from, DateTime? to, long classId, long personId)
+        public IQueryable<FilterScheduleDto> FilterScheduleParent(DateTime? from, DateTime? to, long classId, long personId, string studentName)
         {
             var result = from c in _context.Classes
                          join s in _context.Schedules on c.ClassId equals s.ClassId
@@ -47,6 +47,10 @@ namespace DataAccess.Repositories
             if (classId != 0)
             {
                 result = result.Where(x => x.ClassId == classId);
+            }
+            if (!String.IsNullOrEmpty(studentName))
+            {
+                result = result.Where(x => x.StudentName == studentName);
             }
 
             return result;
