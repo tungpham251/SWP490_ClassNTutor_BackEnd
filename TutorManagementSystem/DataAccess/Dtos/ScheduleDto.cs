@@ -42,7 +42,7 @@ namespace DataAccess.Dtos
         public string Status { get; set; } = null!;
         public long ClassId { get; set; }
         public string ClassName { get; set; } = null!;
-        public string StudentName { get; set; } = null!;
+        public string? StudentName { get; set; }
         public int? Attendent {  get; set; }
     }
 }
