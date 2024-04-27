@@ -472,6 +472,7 @@ namespace BusinessLogic.Services
                         {
                             var oldSchedule = await _context.Schedules.FirstOrDefaultAsync(s => s.Id.Equals(schedule.Id)).ConfigureAwait(false);
                             oldSchedule.DayOfWeek = schedule.DayOfWeek;
+                            oldSchedule.Date = schedule.Date;
                             oldSchedule.SessionStart = schedule.SessionStart;
                             oldSchedule.SessionEnd = schedule.SessionEnd;
                             oldSchedule.Status = schedule.Status;

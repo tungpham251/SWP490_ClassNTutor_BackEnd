@@ -86,7 +86,7 @@ namespace API.Controllers
 
         [Authorize(Roles = "STAFF,TUTOR,PARENT")]
         [HttpGet("get-class-details/{id}")]
-        public async Task<IActionResult> GetClassByIdIncludeStudentInformation([FromRoute] long id)
+        public async Task<IActionResult> GetClassDetail([FromRoute] long id)
         {
             var result = await _classService.GetClassByIdIncludeStudentInformation(id).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
