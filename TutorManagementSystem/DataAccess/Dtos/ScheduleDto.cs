@@ -26,6 +26,7 @@ namespace DataAccess.Dtos
     {
         [Required]
         public long Id { get; set; }
+        public DateTime? Date { get; set; }
         public string DayOfWeek { get; set; } = null!;
         public TimeSpan SessionStart { get; set; }
         public TimeSpan SessionEnd { get; set; }
