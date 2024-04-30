@@ -18,7 +18,6 @@ namespace API.Controllers
             _scheduleService = scheduleService;
         }
 
-
         //[Authorize(Roles = "STAFF")]
         [HttpGet("get-schedule-for-current-user-and-class-id")]
         public async Task<IActionResult> GetScheduleForCurrentUserAndClassId([FromQuery] long classId)
