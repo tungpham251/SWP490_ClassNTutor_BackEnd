@@ -93,5 +93,22 @@ namespace BusinessLogic.Services
 
             return new ViewPaging<EvaluationDto>(result, pagination);
         }
+
+        public List<EvaluationDto> GetAllEvaluationByClassIdNoPaging(RequestEvaluationAllDto entity)
+        {
+            var evaluations = _evaluationRepository.GetEvaluations(entity.ClassId, entity.StudentId, entity.StartDate, entity.EndDate);
+
+            var result = _mapper.Map<IEnumerable<EvaluationDto>>(evaluations);
+            if (result == null) return null;
+            return (List<EvaluationDto>)result;
+        }
+
+        public List<EvaluationDto> GetEvaluationForParentNoPaging(EvaluationForParentAllDto entity)
+        {
+            var evaluations = _evaluationRepository.GetEvaluationForParent(entity.ParentId, entity.StudentId, entity.StartDate, entity.EndDate);
+            var result = _mapper.Map<IEnumerable<EvaluationDto>>(evaluations);
+            if (result == null) return null;
+            return (List<EvaluationDto>)result;
+        }
     }
 }
