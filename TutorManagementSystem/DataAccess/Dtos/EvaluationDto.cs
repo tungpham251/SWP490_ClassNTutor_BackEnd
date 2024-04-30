@@ -58,4 +58,30 @@ namespace DataAccess.Dtos
         public DateTime? EndDate { get; set; }
 
     }
+
+    public class RequestEvaluationAllDto
+    {
+        [Range(0, long.MaxValue)]
+        public long ClassId { get; set; }
+        //[Required]
+        //public PagingRequest PagingRequest { get; set; } = null!;
+        public long? StudentId { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+    }
+
+    public class EvaluationForParentAllDto
+    {
+        [Range(0, long.MaxValue)]
+        public long ParentId { get; set; }
+        //[Required]
+        //public PagingRequest PagingRequest { get; set; } = null!;
+
+        public long? StudentId { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+    }
 }

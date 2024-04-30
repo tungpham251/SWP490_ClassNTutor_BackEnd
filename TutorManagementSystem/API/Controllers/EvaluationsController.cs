@@ -48,5 +48,20 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [HttpGet("get-all-evaluation-by-classId-no-paging")]
+        public async Task<IActionResult> GetAllEvaluationByClassIdNoPaging([FromQuery] RequestEvaluationAllDto entity)
+        {
+            var result = _evaluationService.GetAllEvaluationByClassIdNoPaging(entity);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        [HttpGet("get-evaluation-for-parent-no-paging")]
+        public async Task<IActionResult> GetEvaluationForParentNoPaging([FromQuery] EvaluationForParentAllDto entity)
+        {
+            var result = _evaluationService.GetEvaluationForParentNoPaging(entity);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
     }
 }
