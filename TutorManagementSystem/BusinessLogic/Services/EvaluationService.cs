@@ -96,7 +96,7 @@ namespace BusinessLogic.Services
 
         public List<EvaluationDto> GetAllEvaluationByClassIdNoPaging(RequestEvaluationAllDto entity)
         {
-            var evaluations = _evaluationRepository.GetEvaluations(entity.ClassId, entity.StudentId, entity.StartDate, entity.EndDate);
+            var evaluations = _evaluationRepository.GetEvaluationsNoPaging(entity.ClassId, entity.StudentId, entity.StartDate, entity.EndDate);
 
             var result = _mapper.Map<IEnumerable<EvaluationDto>>(evaluations);
             if (result == null) return null;
@@ -105,7 +105,7 @@ namespace BusinessLogic.Services
 
         public List<EvaluationDto> GetEvaluationForParentNoPaging(EvaluationForParentAllDto entity)
         {
-            var evaluations = _evaluationRepository.GetEvaluationForParent(entity.ParentId, entity.StudentId, entity.StartDate, entity.EndDate);
+            var evaluations = _evaluationRepository.GetEvaluationForParentNoPaging(entity.ParentId, entity.ClassId, entity.StudentId, entity.StartDate, entity.EndDate);
             var result = _mapper.Map<IEnumerable<EvaluationDto>>(evaluations);
             if (result == null) return null;
             return (List<EvaluationDto>)result;
