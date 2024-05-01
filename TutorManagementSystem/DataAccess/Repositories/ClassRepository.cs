@@ -189,6 +189,18 @@ namespace DataAccess.Repositories
             return result;
         }
 
+        public async Task<Class> GetClassByIdIncludeScheduleStudentInformation(long id)
+        {
+            var result = await _context.Classes
+                             .Include(c => c.Tutor).ThenInclude(c => c.Person)
+                             .Include(c => c.Subject)
+                             .Include(c => c.Schedules)
+                             .ThenInclude(c => c.Attendents)
+                             .ThenInclude(c => c.Student)
+                             .ThenInclude(c => c.StudentNavigation)
+                 .FirstOrDefaultAsync(c => c.ClassId.Equals(id) && c.Status.Equals("ACTIVE")).ConfigureAwait(false);
+            return result;
+        }
         public IQueryable<StudentDto> SearchStudentInParent(string searchWord)
         {
             var query = from s in _context.Students

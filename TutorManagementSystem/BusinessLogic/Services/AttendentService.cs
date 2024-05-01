@@ -19,7 +19,7 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<AttendentDto>> GetStudentsAttend(long scheduleId)
         {
-            var students = await _context.Attendents.Where(x => x.ScheduleId == scheduleId).Include(x => x.Student).ThenInclude(x => x.Parent).ToListAsync().ConfigureAwait(false);
+            var students = await _context.Attendents.Where(x => x.ScheduleId == scheduleId).Include(x => x.Student).ThenInclude(x => x.StudentNavigation).ToListAsync().ConfigureAwait(false);
             if (students == null)
                 return Enumerable.Empty<AttendentDto>();
             var result = _mapper.Map<List<AttendentDto>>(students);

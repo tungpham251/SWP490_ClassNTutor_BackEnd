@@ -74,8 +74,18 @@ namespace DataAccess
             CreateMap<Staff, GetStaffDto>();
 
             CreateMap<Attendent, AttendentDto>()
-               .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent.FullName))
-               .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.Parent.UserAvatar));
+              .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation.FullName))
+              .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation.UserAvatar));
+
+            CreateMap<Class, ClassDetailsIncludeScheduleStudentDto>()
+                .ForMember(dest => dest.TutorName, opt => opt.MapFrom(src => src.Tutor == null ? "null" : src.Tutor.Person == null ? "null" : src.Tutor.Person.FullName))
+                .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject == null ? "null" : src.Subject == null ? "null" : src.Subject.SubjectName));
+            CreateMap<Schedule, ScheduleStudentDto>();
+
+            CreateMap<Attendent, ScheduleStudentInformationDto>()
+               .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Student == null ? "null" : src.Student.StudentNavigation == null ? "null" : src.Student.StudentNavigation.FullName));
+
+
         }
 
     }

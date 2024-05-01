@@ -22,5 +22,7 @@ namespace BusinessLogic.Services.Interfaces
 
         Task<bool> DeleteClassById(long classId);
         Task<ClassDetailsIncludeStudentInfoDto> GetClassByIdIncludeStudentInformation(long id);
+        Task<ClassDetailsIncludeScheduleStudentDto> GetClassByIdIncludeScheduleStudentInformation(long id, long parentId);
+
     }
 }
