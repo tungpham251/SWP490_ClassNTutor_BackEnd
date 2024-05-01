@@ -2,6 +2,7 @@
 using DataAccess.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -89,6 +90,19 @@ namespace API.Controllers
         public async Task<IActionResult> GetClassDetail([FromRoute] long id)
         {
             var result = await _classService.GetClassByIdIncludeStudentInformation(id).ConfigureAwait(false);
+            if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
+        //[Authorize(Roles = "PARENT")]
+        [HttpGet("get-parent-class-details/{id}")]
+        public async Task<IActionResult> GetClassStudentDetail([FromRoute] long id)
+        {
+            string parentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(parentId))
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
+
+            var result = await _classService.GetClassByIdIncludeScheduleStudentInformation(id, long.Parse(parentId)).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }

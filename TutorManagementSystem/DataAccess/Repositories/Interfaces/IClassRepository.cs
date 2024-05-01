@@ -16,5 +16,7 @@ namespace DataAccess.Repositories.Interfaces
         void DeleteClassById(long classId);
 
         Task<Class> GetClassByIdIncludeStudentInformation(long id);
+
+        Task<Class> GetClassByIdIncludeScheduleStudentInformation(long id);
     }
 }
