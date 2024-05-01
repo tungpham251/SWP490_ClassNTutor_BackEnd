@@ -173,6 +173,33 @@ namespace BusinessLogic.Services
             return result;
         }
 
+        public async Task<ClassDetailsIncludeScheduleStudentDto> GetClassByIdIncludeScheduleStudentInformation(long id, long parentId)
+        {
+            var classDetails = await _classRepository.GetClassByIdIncludeScheduleStudentInformation(id).ConfigureAwait(false);
+            if (classDetails == null)
+            {
+                return null;
+            }
+            classDetails.Schedules = classDetails.Schedules
+                                    .Where(schedule => schedule.Attendents.Any(attendent => attendent.Student.ParentId == parentId)).ToList();
+            var result = _mapper.Map<ClassDetailsIncludeScheduleStudentDto>(classDetails);
+
+            if (classDetails.Schedules.Any())
+            {
+                result.Schedules = _mapper.Map<IEnumerable<ScheduleStudentDto>>(classDetails.Schedules);
+                foreach (var scheduleDto in result.Schedules)
+                {
+                    var correspondingSchedule = classDetails.Schedules.FirstOrDefault(s => s.Id == scheduleDto.Id);
+                    if (correspondingSchedule != null)
+                    {
+                        scheduleDto.ScheduleStudentInformationDto = _mapper.Map<IEnumerable<ScheduleStudentInformationDto>>(correspondingSchedule.Attendents);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public async Task<ViewPaging<StudentDto>> GetStudentsInClass(StudentInClassRequestDto entity)
         {
             var search = _classRepository.SearchStudentInParent(entity.SearchWord!);
@@ -218,7 +245,7 @@ namespace BusinessLogic.Services
                         DateTime currentDate = DateTime.Now.Date;
                         if (!membersInClass.Any())
                         {
-                            var schedulesOfClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId && currentDate > x.Date).ToListAsync().ConfigureAwait(false);
+                            var schedulesOfClass = await _context.Schedules.Where(x => x.ClassId == item.ClassId && currentDate >= x.Date).ToListAsync().ConfigureAwait(false);
                             if (!schedulesOfClass.Any())
                             {
                                 //add schedule attendent

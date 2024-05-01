@@ -15,6 +15,16 @@ namespace DataAccess.Dtos
         public DateTime? Date { get; set; }
         public string Status { get; set; } = null!;
     }
+    public class ScheduleStudentDto
+    {
+        public long Id { get; set; }
+        public string DayOfWeek { get; set; } = null!;
+        public TimeSpan SessionStart { get; set; }
+        public TimeSpan SessionEnd { get; set; }
+        public DateTime? Date { get; set; }
+        public string Status { get; set; } = null!;
+        public IEnumerable<ScheduleStudentInformationDto> ScheduleStudentInformationDto { get; set; }
+    }
     public class AddScheduleDto
     {
         public string DayOfWeek { get; set; } = null!;
