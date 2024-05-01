@@ -14,5 +14,7 @@ namespace DataAccess.Repositories.Interfaces
 
         IQueryable<EvaluationDto> GetEvaluations(long classId, long? studentId, DateTime? startDate, DateTime? endDate);
         IQueryable<EvaluationDto> GetEvaluationForParent(long parentId, long? studentId, DateTime? startDate, DateTime? endDate);
+        IQueryable<EvaluationDto> GetEvaluationsNoPaging(long classId, long? studentId, DateTime? startDate, DateTime? endDate);
+        IQueryable<EvaluationDto> GetEvaluationForParentNoPaging(long parentId, long? classId, long? studentId, DateTime? startDate, DateTime? endDate);
     }
 }

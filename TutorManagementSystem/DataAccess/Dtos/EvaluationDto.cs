@@ -78,6 +78,8 @@ namespace DataAccess.Dtos
         //[Required]
         //public PagingRequest PagingRequest { get; set; } = null!;
 
+        public long? ClassId { get; set; }
+
         public long? StudentId { get; set; }
         public DateTime? StartDate { get; set; }
 
