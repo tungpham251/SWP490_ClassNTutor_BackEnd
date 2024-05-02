@@ -7,5 +7,6 @@ namespace BusinessLogic.Services.Interfaces
         Task<IEnumerable<AttendentDto>> GetStudentsAttend(long scheduleId);
 
         Task<bool> UpdateStudentsAttend(List<AttendentRequestDto> entity);
+        Task<bool> CheckScheduleClass(long tutorId);
     }
 }

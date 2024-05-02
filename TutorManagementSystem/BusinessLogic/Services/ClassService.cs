@@ -462,9 +462,13 @@ namespace BusinessLogic.Services
         {
             try
             {
-                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId)).ConfigureAwait(false);
+                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId) && c.Status.Equals("SUSPEND") || c.Status.Equals("COMPLETED")).ConfigureAwait(false);
                 if (result == null)
                     return false;
+                if (result.Status.Equals("SUSPEND") || result.Status.Equals("COMPLETED"))
+                {
+                    return false;
+                }
 
                 result.TutorId = entity.TutorId;
                 result.ClassName = entity.ClassName;
