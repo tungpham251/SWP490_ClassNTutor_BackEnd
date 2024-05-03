@@ -64,12 +64,20 @@ namespace BusinessLogic.Services
         {
             try
             {
-                if (!FileHelper.IsImage(entity.Avatar.FileName))
+                if (entity.Avatar != null)
                 {
-                    return null;
+                    if (!FileHelper.IsImage(entity.Avatar.FileName))
+                    {
+                        return null;
+                    }
                 }
 
-                var avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
+                string avatar = null!;
+
+                if (entity.Avatar != null)
+                {
+                    avatar = await _s3storageService.UploadFileToS3(entity.Avatar!).ConfigureAwait(false);
+                }
 
                 var lastPerson = await _context.People.OrderBy(x => x.PersonId).LastOrDefaultAsync().ConfigureAwait(false);
 

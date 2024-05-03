@@ -17,24 +17,26 @@ namespace API.Controllers
         {
             _scheduleService = scheduleService;
         }
-  
+
         //[Authorize(Roles = "STAFF")]
         [HttpGet("get-schedule-for-current-user-and-class-id")]
-        public async Task<IActionResult> GetScheduleForCurrentUserAndClassId([FromQuery] long classId)
+        public async Task<IActionResult> GetScheduleForCurrentUserAndClassId([FromQuery] string? classId)
         {
+            if (string.IsNullOrEmpty(classId)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, classId));
             string personId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(personId))
                 return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
-            var result =await _scheduleService.GetScheduleForCurrentUserAndClassId(long.Parse(personId),classId).ConfigureAwait(false);
+            var result = await _scheduleService.GetScheduleForCurrentUserAndClassId(long.Parse(personId), classId).ConfigureAwait(false);
             if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
         [HttpGet("get-filter-schedule")]
-        public async Task<IActionResult> GetFilterSchedule([FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] long classId, [FromQuery] long personId, [FromQuery] string? studentName)
+        public async Task<IActionResult> GetFilterSchedule([FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] string? classId, [FromQuery] long personId, [FromQuery] string? studentName)
         {
             try
             {
+                if (string.IsNullOrEmpty(classId)) BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, classId));
                 var result = await _scheduleService.FilterScheduleFromTo(from, to, classId, personId, studentName).ConfigureAwait(false);
 
                 if (result == null) return NotFound(new ApiFormatResponse(StatusCodes.Status404NotFound, false, result));
