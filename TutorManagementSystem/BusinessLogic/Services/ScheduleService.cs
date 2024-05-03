@@ -23,16 +23,16 @@ namespace BusinessLogic.Services
             _scheduleRepository = scheduleRepository;
         }
 
-        public async Task<IEnumerable<ScheduleDto>> GetScheduleForCurrentUserAndClassId(long personId, long classId)
+        public async Task<IEnumerable<ScheduleDto>> GetScheduleForCurrentUserAndClassId(long personId, string classId)
         {
             var classes = _context.Classes.Include(c => c.Schedules)
                                           .Where(c => c.TutorId.Equals(personId))
                                           .AsQueryable();
 
             var result = new List<ScheduleDto>();
-            if (classId != 0)
+            if (!string.IsNullOrEmpty(classId))
             {
-                var classByClassId = await classes.FirstOrDefaultAsync(c => c.ClassId.Equals(classId)).ConfigureAwait(false);
+                var classByClassId = await classes.FirstOrDefaultAsync(c => c.ClassId.Equals(long.Parse(classId))).ConfigureAwait(false);
                 if (classByClassId == null)
                     return Enumerable.Empty<ScheduleDto>();
                 result = _mapper.Map<List<ScheduleDto>>(classByClassId.Schedules);
@@ -44,7 +44,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, long classId, long personId, string studentName)
+        public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, string classId, long personId, string studentName)
         {
             var currentUser = await _context.People
                                                     .Include(p => p.Account)
