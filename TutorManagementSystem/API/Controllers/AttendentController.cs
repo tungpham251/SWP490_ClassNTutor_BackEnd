@@ -34,5 +34,18 @@ namespace API.Controllers
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }
 
+        [Authorize(Roles = "TUTOR")]
+        [HttpPut("check-schedule-class")]
+        public async Task<IActionResult> CheckScheduleClass()
+        {
+            string tutorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(tutorId))
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login pls"));
+
+            var result = await _attendentService.CheckScheduleClass(long.Parse(tutorId)).ConfigureAwait(false);
+            if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+            return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+        }
+
     }
 }

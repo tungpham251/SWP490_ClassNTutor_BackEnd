@@ -10,5 +10,7 @@ namespace BusinessLogic.Services.Interfaces
         Task<bool> DeletePayment(long paymentId);
         Task<bool> CreatePayment(CreatePaymentDto entity);
         Task<ViewPaging<ResponsePaymentDto>> GetPaymentByCurrentUser(SearchFilterPaymentCurrentUserDto entity, string personId);
+
+        Task<bool> UpdatePaymentDescription(long paymentId, string paymentDescription);
     }
 }
