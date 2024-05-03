@@ -57,7 +57,8 @@ namespace BusinessLogic.Services
                                                        .ConfigureAwait(false);
                 if (oldStudent == null)
                     return false;
-                _context.Students.Remove(oldStudent);
+                oldStudent.Status = "DELETED";
+                _context.Students.Update(oldStudent);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
