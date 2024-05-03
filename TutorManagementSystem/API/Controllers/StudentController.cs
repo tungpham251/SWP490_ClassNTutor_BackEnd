@@ -37,7 +37,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "PARENT")]
-        [HttpDelete("delete-student/{id}")]
+        [HttpPut("delete-student/{id}")]
         public async Task<IActionResult> DeleteStudent([FromRoute] long id)
         {
             var result = await _studentService.DeleteStudent(id).ConfigureAwait(false);

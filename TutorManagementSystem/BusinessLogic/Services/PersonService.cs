@@ -98,7 +98,7 @@ namespace BusinessLogic.Services
                     result.Students = _mapper.Map<IEnumerable<StudentDto>>(await _context.Students
                                                                         .Include(s => s.Parent)
                                                                         .Include(s => s.StudentNavigation)
-                                                                        .Where(st => st.ParentId.Equals(currentPersonId))
+                                                                        .Where(st => st.ParentId.Equals(currentPersonId) && !st.Status.Equals("DELETED"))
                                                                         .ToListAsync().ConfigureAwait(false));
                 }
             }

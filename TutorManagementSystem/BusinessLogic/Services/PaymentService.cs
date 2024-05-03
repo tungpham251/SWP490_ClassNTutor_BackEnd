@@ -94,5 +94,23 @@ namespace BusinessLogic.Services
             var result = await _paymentRepository.UpdateStatusPayment(paymentId, status).ConfigureAwait(false);
             return result;
         }
+
+
+        public async Task<bool> UpdatePaymentDescription(long paymentId, string paymentDescription)
+        {
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.PaymentId.Equals(paymentId)).ConfigureAwait(false);
+            if (payment != null)
+            {
+                payment.PaymentDesc = paymentDescription;
+                payment.PayDate = DateTime.Now;
+                payment.UpdatedAt = DateTime.Now;
+                payment.Status = "SENT";
+
+                _context.Payments.Update(payment);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            return false;
+        }
     }
 }

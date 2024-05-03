@@ -65,6 +65,18 @@ namespace API.Controllers
             return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
         }
 
+
+        [HttpPut("update-payment-description/{paymentId}")]
+        public async Task<IActionResult> UpdatePaymentDescription([FromRoute] long paymentId, [FromBody] string paymentDescription)
+        {
+            var result = await _paymentService.UpdatePaymentDescription(paymentId, paymentDescription).ConfigureAwait(false);
+            if (result == true)
+            {
+                return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
+            }
+            return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
+        }
+
         [Authorize(Roles = "STAFF")]
         [HttpPost("create-payment")]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentDto entity)
