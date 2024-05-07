@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Models
@@ -47,7 +44,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Account__EC7D7D4D939FB007");
+                    .HasName("PK__Account__EC7D7D4D5FD99E13");
 
                 entity.ToTable("Account");
 
@@ -96,7 +93,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Attendent>(entity =>
             {
                 entity.HasKey(e => new { e.ScheduleId, e.StudentId })
-                    .HasName("PK__Attenden__71E3F0B79F8DB9F8");
+                    .HasName("PK__Attenden__71E3F0B73DB7D4A2");
 
                 entity.ToTable("Attendent");
 
@@ -546,7 +543,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<SubjectTutor>(entity =>
             {
                 entity.HasKey(e => new { e.SubjectId, e.TutorId, e.Level })
-                    .HasName("PK__SubjectT__08E21A3CF2F9E989");
+                    .HasName("PK__SubjectT__08E21A3CDA3CDB38");
 
                 entity.ToTable("SubjectTutor");
 
@@ -577,7 +574,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Tutor>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Tutor__EC7D7D4D9C3702D5");
+                    .HasName("PK__Tutor__EC7D7D4D863219DA");
 
                 entity.ToTable("Tutor");
 
@@ -632,7 +629,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Staff>(entity =>
             {
                 entity.HasKey(e => e.PersonId)
-                    .HasName("PK__Staff__EC7D7D4D01A87B00");
+                    .HasName("PK__Staff__EC7D7D4D6FF3F259");
 
                 entity.ToTable("Staff");
 
