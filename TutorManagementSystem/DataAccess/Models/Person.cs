@@ -15,7 +15,7 @@ namespace DataAccess.Models
         public string? UserAvatar { get; set; }
         public string Phone { get; set; } = null!;
         public string Gender { get; set; } = null!;
-        public string Address { get; set; } = null!;
+        public string? Address { get; set; }
         public DateTime? Dob { get; set; }
 
         public virtual Account? Account { get; set; }
