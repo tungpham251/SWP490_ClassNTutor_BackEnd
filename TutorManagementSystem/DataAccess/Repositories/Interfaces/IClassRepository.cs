@@ -13,7 +13,7 @@ namespace DataAccess.Repositories.Interfaces
 
         void UpdateClass(Class entity);
 
-        void DeleteClassById(long classId);
+        void DeleteClassById(long personId, long classId);
 
         Task<Class> GetClassByIdIncludeStudentInformation(long id);
 
