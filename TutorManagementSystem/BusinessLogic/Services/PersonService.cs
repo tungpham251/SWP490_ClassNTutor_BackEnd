@@ -230,7 +230,14 @@ namespace BusinessLogic.Services
                 {
                     return false;
                 }
-                staff.Status = "SUSPEND";
+                if (staff.Status.Equals("SUSPEND"))
+                {
+                    staff.Status = "ACTIVE";
+                }else if (staff.Status.Equals("ACTIVE"))
+                {
+                    staff.Status = "SUSPEND";
+                }
+
                 _context.Accounts.Update(staff);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;

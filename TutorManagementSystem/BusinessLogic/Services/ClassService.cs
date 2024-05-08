@@ -12,6 +12,7 @@ namespace BusinessLogic.Services
         private readonly ClassNTutorContext _context;
         private readonly IClassRepository _classRepository;
         private readonly IMapper _mapper;
+        
 
         public ClassService(ClassNTutorContext context, IClassRepository classRepository, IMapper mapper)
         {
@@ -129,14 +130,15 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task<bool> DeleteClassById(long classId)
+        public async Task<bool> DeleteClassById(long personId, long classId)
         {
             try
             {
-
+               
                 var listSchedule = _context.Classes.Include(c => c.Schedules).FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
 
                 var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
+
                 if (classById.Status.Equals("ACTIVE"))
                 {
                     if (listSchedule.Any())
@@ -145,19 +147,19 @@ namespace BusinessLogic.Services
                         _context.Schedules.UpdateRange(listSchedule);
                     }
 
-                    _classRepository.DeleteClassById(classId);
+                    _classRepository.DeleteClassById(personId, classId);
 
                     await _context.SaveChangesAsync().ConfigureAwait(false);                   
                 }
                 else if (classById.Status.Equals("SUSPEND"))
-                {
+                {                    
                     if (listSchedule.Any())
                     {
                         listSchedule.ToList().ForEach(s => s.Status = "CREATED");
                         _context.Schedules.UpdateRange(listSchedule);
                     }
 
-                    _classRepository.DeleteClassById(classId);
+                    _classRepository.DeleteClassById(personId, classId);
 
                     await _context.SaveChangesAsync().ConfigureAwait(false);                    
                 }

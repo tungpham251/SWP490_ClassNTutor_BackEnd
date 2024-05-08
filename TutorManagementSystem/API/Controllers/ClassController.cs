@@ -46,7 +46,10 @@ namespace API.Controllers
         [HttpPut("suspend-class/{classId}")]
         public async Task<IActionResult> DeleteClassById([FromRoute] long classId)
         {
-            var result = await _classService.DeleteClassById(classId).ConfigureAwait(false);
+            string personId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(personId))
+                return BadRequest(new ApiFormatResponse(StatusCodes.Status404NotFound, false, "Login please"));
+            var result = await _classService.DeleteClassById(long.Parse(personId),classId).ConfigureAwait(false);
             if (!result) return BadRequest(new ApiFormatResponse(StatusCodes.Status400BadRequest, false, result));
             return Ok(new ApiFormatResponse(StatusCodes.Status200OK, true, result));
         }        

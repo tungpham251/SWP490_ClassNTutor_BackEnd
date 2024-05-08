@@ -8,7 +8,8 @@ namespace DataAccess.Repositories
     public class ClassRepository : IClassRepository
     {
         private readonly ClassNTutorContext _context;
-
+        private const int STAFF = 0;
+        private const int TUTOR = 1;
         public ClassRepository(ClassNTutorContext context)
         {
             _context = context;
@@ -168,15 +169,41 @@ namespace DataAccess.Repositories
             _context.Classes.Update(entity);
         }
 
-        public void DeleteClassById(long classId)
+        public void DeleteClassById(long personId, long classId)
         {
+            var currentUser = _context.People.Include(p => p.Account)
+                                                   .ThenInclude(a => a.Role)
+                                                   .FirstOrDefault(p => p.PersonId.Equals(personId));                                                   
+
             var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
-            if(classById.Status == "ACTIVE")
+            if(classById.Status.Equals("ACTIVE"))
             {
+                if (currentUser.Account.RoleId.Equals(STAFF))
+                {
+                    classById.ClassName += "-SUSPEND";
+                    classById.ClassDesc = "SUSPEND";
+                }
                 classById.Status = "SUSPEND";
-            }else if(classById.Status == "SUSPEND")
+            }else if(classById.Status.Equals("SUSPEND"))
             {
-                classById.Status = "ACTIVE";
+                if(currentUser.Account.RoleId.Equals(STAFF))
+                {
+                    if (classById.ClassDesc.Equals("SUSPEND"))
+                    {
+                        classById.Status = "ACTIVE";
+                        classById.ClassDesc = "";
+                        classById.ClassName = classById.ClassName.Substring(0, classById.ClassName.Length - "-SUSPEND".Length);
+                    }
+                }
+                else if(currentUser.Account.RoleId.Equals(TUTOR))
+                {
+                    if (!classById.ClassDesc.Equals("SUSPEND"))
+                    {
+                        classById.Status = "ACTIVE";                       
+                    }
+                }
+                
+                
             }
             
             _context.Classes.Update(classById);
