@@ -53,11 +53,11 @@ namespace BusinessLogic.Services
                                                     .FirstOrDefaultAsync(p => p.PersonId.Equals(personId))
                                                     .ConfigureAwait(false);
 
-            var classSchedule = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(classId)).ConfigureAwait(false);
+           
+            IEnumerable<FilterScheduleDto> data = null;
+
             
-            if (classSchedule.Status == "ACTIVE")
-            {
-                IEnumerable<FilterScheduleDto> data = null;
+                
                 if (currentUser.Account.RoleId.Equals(TUTOR))
                 {
                     data = await _scheduleRepository.FilterScheduleTutor(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
@@ -65,14 +65,10 @@ namespace BusinessLogic.Services
                 if (currentUser.Account.RoleId.Equals(PARENT))
                 {
                     data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId, studentName).ToListAsync().ConfigureAwait(false);
-                }
-                var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
-                return orderedData;
-            }
-            else
-            {
-                return null;
-            }
+                }                
+            
+            var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
+            return orderedData;
 
         }
 
