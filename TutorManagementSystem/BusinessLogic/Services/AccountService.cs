@@ -318,7 +318,13 @@ namespace BusinessLogic.Services
             {
                 var account = await _context.Accounts.Where(x => x.PersonId == id).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (account == null) return false;
-                account.Status = "SUSPEND";
+                if (account.Status.Equals("ACTIVE"))
+                {
+                    account.Status = "SUSPEND";
+                }else if(account.Status.Equals("SUSPEND"))
+                {
+                    account.Status = "ACTIVE";
+                }                
                 _context.Accounts.Update(account);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return true;

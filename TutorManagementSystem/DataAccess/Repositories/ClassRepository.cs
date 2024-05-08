@@ -171,7 +171,14 @@ namespace DataAccess.Repositories
         public void DeleteClassById(long classId)
         {
             var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
-            classById.Status = "SUSPEND";
+            if(classById.Status == "ACTIVE")
+            {
+                classById.Status = "SUSPEND";
+            }else if(classById.Status == "SUSPEND")
+            {
+                classById.Status = "ACTIVE";
+            }
+            
             _context.Classes.Update(classById);
         }
 
