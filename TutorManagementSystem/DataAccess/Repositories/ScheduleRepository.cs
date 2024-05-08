@@ -22,6 +22,7 @@ namespace DataAccess.Repositories
                          join st in _context.Students on a.StudentId equals st.StudentId
                          join p in _context.People on st.StudentId equals p.PersonId
                          where st.ParentId == personId
+                         where c.Status == "ACTIVE"
                          select new FilterScheduleDto
                          {
                              Id = s.Id,
@@ -61,6 +62,7 @@ namespace DataAccess.Repositories
             var result = from s in _context.Schedules
                          join c in _context.Classes on s.ClassId equals c.ClassId
                          where c.TutorId == personId
+                         where c.Status == "ACTIVE"
                          select new FilterScheduleDto
                          {
                              Id = s.Id,
