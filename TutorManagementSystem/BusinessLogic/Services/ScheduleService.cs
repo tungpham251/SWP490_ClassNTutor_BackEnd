@@ -46,23 +46,34 @@ namespace BusinessLogic.Services
 
         public async Task<IEnumerable<FilterScheduleDto>> FilterScheduleFromTo(DateTime? from, DateTime? to, string classId, long personId, string studentName)
         {
+            
             var currentUser = await _context.People
                                                     .Include(p => p.Account)
                                                     .ThenInclude(a => a.Role)
                                                     .FirstOrDefaultAsync(p => p.PersonId.Equals(personId))
                                                     .ConfigureAwait(false);
-            IEnumerable<FilterScheduleDto> data = null;
-            if (currentUser.Account.RoleId.Equals(TUTOR))
-            {
-                data = await _scheduleRepository.FilterScheduleTutor(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
-            }
-            if (currentUser.Account.RoleId.Equals(PARENT))
-            {
-                data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId, studentName).ToListAsync().ConfigureAwait(false);
-            }
-            var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
 
-            return orderedData;
+            var classSchedule = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(classId)).ConfigureAwait(false);
+            
+            if (classSchedule.Status == "ACTIVE")
+            {
+                IEnumerable<FilterScheduleDto> data = null;
+                if (currentUser.Account.RoleId.Equals(TUTOR))
+                {
+                    data = await _scheduleRepository.FilterScheduleTutor(from, to, classId, personId).ToListAsync().ConfigureAwait(false);
+                }
+                if (currentUser.Account.RoleId.Equals(PARENT))
+                {
+                    data = await _scheduleRepository.FilterScheduleParent(from, to, classId, personId, studentName).ToListAsync().ConfigureAwait(false);
+                }
+                var orderedData = data.OrderBy(s => GetDayOfWeekOrder(s.DayOfWeek)).ThenBy(s => s.SessionStart).ToList();
+                return orderedData;
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
         static int GetDayOfWeekOrder(string dayOfWeek)

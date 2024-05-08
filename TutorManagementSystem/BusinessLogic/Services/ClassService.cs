@@ -133,19 +133,34 @@ namespace BusinessLogic.Services
         {
             try
             {
-               
-                var listSchedule = _context.Classes.Include(c => c.Schedules)
-                                                   .FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
 
-                if (listSchedule.Any())
+                var listSchedule = _context.Classes.Include(c => c.Schedules).FirstOrDefault(c => c.ClassId.Equals(classId)).Schedules;
+
+                var classById = _context.Classes.FirstOrDefault(c => c.ClassId.Equals(classId));
+                if (classById.Status.Equals("ACTIVE"))
                 {
-                    listSchedule.ToList().ForEach(s => s.Status = "DELETED");
-                    _context.Schedules.UpdateRange(listSchedule);
+                    if (listSchedule.Any())
+                    {
+                        listSchedule.ToList().ForEach(s => s.Status = "DELETED");
+                        _context.Schedules.UpdateRange(listSchedule);
+                    }
+
+                    _classRepository.DeleteClassById(classId);
+
+                    await _context.SaveChangesAsync().ConfigureAwait(false);                   
                 }
+                else if (classById.Status.Equals("SUSPEND"))
+                {
+                    if (listSchedule.Any())
+                    {
+                        listSchedule.ToList().ForEach(s => s.Status = "CREATED");
+                        _context.Schedules.UpdateRange(listSchedule);
+                    }
 
-                _classRepository.DeleteClassById(classId);
+                    _classRepository.DeleteClassById(classId);
 
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);                    
+                }
                 return true;
             }
             catch
@@ -462,7 +477,7 @@ namespace BusinessLogic.Services
         {
             try
             {
-                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId) && c.Status.Equals("SUSPEND") || c.Status.Equals("COMPLETED")).ConfigureAwait(false);
+                var result = await _context.Classes.FirstOrDefaultAsync(c => c.ClassId.Equals(entity.ClassId)).ConfigureAwait(false);
                 if (result == null)
                     return false;
                 if (result.Status.Equals("SUSPEND") || result.Status.Equals("COMPLETED"))
