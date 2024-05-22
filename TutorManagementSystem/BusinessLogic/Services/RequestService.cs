@@ -50,6 +50,15 @@ namespace BusinessLogic.Services
 
                     return _mapper.Map<UpdateRequestDto>(findRequest);
                 }
+                if (findRequest != null
+                    && findRequest.RequestType.ToLower().Equals("OPEN".ToLower()))
+                {
+                    findRequest.Status = "ACCEPTED";
+                    _context.Requests.Update(findRequest);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                    return _mapper.Map<UpdateRequestDto>(findRequest);
+                }
                 return null;
 
             }
